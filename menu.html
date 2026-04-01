@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Vanessa</title>
+    
+    <link rel="icon" type="image/png" href="iconopag.png">
+    <link rel="apple-touch-icon" href="iconopag.png">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FDA7C4">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #FDA7C4;
+            --bg-soft: #ffb8d1;
+            --bg-gradient: linear-gradient(180deg, #FDA7C4 0%, #ffb8d1 100%);
+            --text-dark: #5e474b;
+            --text-muted: #8c7377;
+            --accent-pink: #ff85a2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Montserrat', sans-serif; }
+
+        body { 
+            background: var(--bg-gradient);
+            color: var(--text-dark); 
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .mobile-container {
+            width: 100%; max-width: 500px;
+            margin: 0 auto; padding: 40px 25px;
+            z-index: 1;
+        }
+
+        .hub-header { text-align: center; margin-bottom: 25px; }
+        .profile-pic {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: #fff; padding: 4px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 2px solid #fff; margin: 0 auto 15px auto; overflow: hidden;
+        }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        .hub-header h1 { font-size: 1.8rem; font-weight: 700; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2px; }
+        .hub-header p { font-size: 0.85rem; color: #fff; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.95; }
+
+        /* --- WIDGET INFO (Panel Estático) --- */
+        .schedule-widget {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.15) 100%);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 30px;
+            padding: 22px; margin-bottom: 30px; display: flex; flex-direction: column; gap: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), inset 0 10px 15px rgba(255, 255, 255, 0.5), inset 0 -8px 15px rgba(253, 167, 196, 0.3);
+            cursor: default;
+        }
+
+        .sw-header { display: flex; align-items: center; gap: 12px; }
+        .sw-icon {
+            width: 45px; height: 45px; background: #fff; border-radius: 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: var(--accent-pink); box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .sw-main-info { flex: 1; }
+        .sw-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+        .sw-class { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); display: block; }
+
+        .sw-progress-container { height: 8px; background: rgba(255, 255, 255, 0.3); border-radius: 10px; overflow: hidden; margin: 5px 0; }
+        .sw-progress-bar { 
+            height: 100%; background: var(--accent-pink); width: 0%; border-radius: 10px; transition: width 1s ease;
+            box-shadow: 0 0 10px rgba(255, 133, 162, 0.5);
+        }
+
+        .sw-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; }
+        .sw-detail { font-size: 0.75rem; font-weight: 700; color: var(--text-dark); }
+        .sw-next { font-size: 0.75rem; color: var(--accent-pink); font-weight: 700; text-align: right; }
+
+        .app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 35px; padding: 35px 15px;
+            text-decoration: none; display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 12px 15px rgba(255, 255, 255, 0.7), inset 0 -10px 20px rgba(253, 167, 196, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card:active { transform: scale(0.94) translateY(4px); }
+        .icon-box { width: 80px; height: 80px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
+        .icon-box img { width: 100%; height: 100%; object-fit: contain; }
+        .card-title { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .card-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        <header class="hub-header">
+            <div class="profile-pic"><img src="icono.png" alt="Vanessa"></div>
+            <h1>Vanessa</h1>
+            <p>¡ Bienvenida !</p>
+        </header>
+
+        <div class="schedule-widget">
+            <div class="sw-header">
+                <div class="sw-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <div class="sw-main-info">
+                    <span class="sw-label" id="statusLabel">Clase Actual</span>
+                    <span class="sw-class" id="currentClass">...</span>
+                </div>
+            </div>
+            
+            <div class="sw-progress-container">
+                <div class="sw-progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="sw-footer">
+                <div class="sw-detail" id="timeLeft">Faltan --</div>
+                <div class="sw-next" id="nextClass">Siguiente: --</div>
+            </div>
+        </div>
+
+        <main class="app-grid">
+            <a href="claves.html" class="card">
+                <div class="icon-box"><img src="tortuga.png" alt="Contraseñas"></div>
+                <div class="card-title">Contraseñas</div>
+                <div class="card-sub">Seguridad</div>
+            </a>
+            <a href="horario.html" class="card">
+                <div class="icon-box"><img src="pinguino.png" alt="Horario"></div>
+                <div class="card-title">Mi Horario</div>
+                <div class="card-sub">Universidad</div>
+            </a>
+        </main>
+    </div>
+
+    <script>
+        const schedule = {
+            1: [{s:14, d:2, n:"Costos Empresariales"}, {s:16, d:1, n:"Habilidades Directivas"}, {s:17, d:2, n:"Probabilidad"}],
+            2: [{s:14, d:1, n:"Costos"}, {s:15, d:2, n:"Mercadotecnia"}, {s:17, d:2, n:"Álgebra Lineal"}],
+            3: [{s:14, d:1, n:"Costos"}, {s:15, d:1, n:"Mercadotecnia"}, {s:16, d:1, n:"Economía"}, {s:17, d:2, n:"Marco Legal"}, {s:19, d:1, n:"Álgebra Lineal"}, {s:20, d:1, n:"Habilidades"}],
+            4: [{s:14, d:1, n:"Habilidades"}, {s:15, d:2, n:"Mercadotecnia"}, {s:17, d:2, n:"Probabilidad"}, {s:19, d:2, n:"Economía"}],
+            5: [{s:14, d:1, n:"Costos"}, {s:15, d:1, n:"Habilidades"}, {s:16, d:2, n:"Economía"}, {s:18, d:1, n:"Probabilidad"}, {s:19, d:2, n:"Álgebra Lineal"}]
+        };
+
+        function formatTime12h(h24) {
+            const period = h24 >= 12 ? 'PM' : 'AM';
+            const h12 = h24 % 12 || 12;
+            return `${h12}:00 ${period}`;
+        }
+
+        function formatTimeLeft(totalMinutes) {
+            if (totalMinutes <= 0) return "Terminado";
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+            return h > 0 ? `${h}h ${m}min` : `${m}min`;
+        }
+
+        function updateWidget() {
+            const now = new Date();
+            const day = now.getDay();
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const currentTime = h + (m / 60);
+
+            const classEl = document.getElementById('currentClass');
+            const timeEl = document.getElementById('timeLeft');
+            const nextEl = document.getElementById('nextClass');
+            const labelEl = document.getElementById('statusLabel');
+            const barEl = document.getElementById('progressBar');
+
+            if (day === 0 || day === 6) {
+                classEl.innerText = "¡Fin de semana! ✨";
+                timeEl.innerText = "Descanso";
+                const mondayFirstClass = schedule[1][0];
+                nextEl.innerText = `Próxima: Lun ${mondayFirstClass.n} (${formatTime12h(mondayFirstClass.s)})`;
+                barEl.style.width = "0%";
+                return;
+            }
+
+            const today = schedule[day];
+            const current = today.find(c => currentTime >= c.s && currentTime < (c.s + c.d));
+            const upcoming = today.filter(c => c.s > currentTime).sort((a,b) => a.s - b.s);
+
+            if (current) {
+                labelEl.innerText = "Clase Actual";
+                classEl.innerText = current.n;
+                const totalMin = current.d * 60;
+                const elapsedMin = (currentTime - current.s) * 60;
+                const remain = Math.round(totalMin - elapsedMin);
+                timeEl.innerText = `Faltan ${formatTimeLeft(remain)}`;
+                barEl.style.width = `${Math.min(100, (elapsedMin / totalMin) * 100)}%`;
+            } else {
+                labelEl.innerText = "Estado";
+                classEl.innerText = "Libre ahora 🌸";
+                timeEl.innerText = "Sin clases";
+                barEl.style.width = "0%";
+            }
+
+            if (upcoming.length > 0) {
+                const next = upcoming[0];
+                nextEl.innerText = `Próxima: ${next.n} (${formatTime12h(next.s)})`;
+            } else {
+                const nextDay = (day >= 5) ? 1 : day + 1;
+                const nextDayClass = schedule[nextDay][0];
+                const dayName = (day >= 5) ? "Lun" : "Mañana";
+                nextEl.innerText = `Próxima: ${dayName} ${nextDayClass.n} (${formatTime12h(nextDayClass.s)})`;
+            }
+        }
+
+        setInterval(updateWidget, 60000);
+        updateWidget();
+    </script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js');
+    });
+  }
+</script>
+</body>
+</html>

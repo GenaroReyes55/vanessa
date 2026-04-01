@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Horario Vanessa 🍓🌸</title>
+    
+    <link rel="icon" type="image/png" href="iconopag.png">
+    <link rel="apple-touch-icon" href="iconopag.png">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFB6C1">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-strong-pink: #FFB6C1; 
+            --bg-white: #FFFFFF;
+            --c-red: #FF3366; 
+            --c-pink: #FF6688; 
+            --text-main: #4A4A4A; 
+            --text-light: #FFFFFF;
+            --kawaii-shadow: 4px 4px 0px var(--c-pink);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Varela Round', sans-serif; }
+
+        body { 
+            background: var(--bg-strong-pink); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            background-image: radial-gradient(rgba(255,255,255,0.7) 3px, transparent 3px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+        }
+
+        .mobile-container {
+            width: 100%; max-width: 500px; margin: 0 auto;
+            padding: calc(env(safe-area-inset-top, 20px) + 20px) 25px 40px 25px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* HEADER KAWAII CON ANIMACIÓN */
+        .hub-header { text-align: center; margin-bottom: 30px; position: relative; }
+        
+        .profile-wrapper { 
+            position: relative; width: 130px; height: 130px; 
+            margin: 0 auto 15px auto; 
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        .orbiting-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 4px dashed var(--c-red);
+            animation: spin 10s linear infinite;
+            z-index: 1;
+        }
+        @keyframes spin { 
+            100% { transform: rotate(360deg); } 
+        }
+
+        .profile-pic {
+            width: 105px; height: 105px; border-radius: 50%;
+            background: var(--bg-white); padding: 4px; 
+            border: 4px solid var(--c-red);
+            box-shadow: 0 0 10px rgba(255, 51, 102, 0.3);
+            position: relative; z-index: 2; overflow: hidden;
+        }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        /* EL NOMBRE AHORA ES EL BOTÓN SECRETO */
+        .hub-header h1 { 
+            font-size: 1.8rem; font-weight: 800; color: var(--c-red); 
+            text-shadow: 2px 2px 0px var(--bg-white); 
+            margin-bottom: 8px; letter-spacing: 1px;
+            cursor: pointer; display: inline-block;
+            transition: 0.2s ease;
+        }
+        .hub-header h1:active {
+            transform: scale(0.95);
+        }
+        
+        .live-clock { 
+            font-size: 0.85rem; font-weight: 700; color: var(--text-main); 
+            background: var(--bg-white); padding: 6px 18px; 
+            border-radius: 20px; display: inline-block;
+            border: 2px solid var(--c-pink);
+            box-shadow: 2px 2px 0px var(--c-pink);
+            display: block; width: fit-content; margin: 0 auto;
+        }
+
+        /* WIDGET DE ESTADO */
+        .schedule-widget {
+            background: var(--bg-white);
+            border: 4px solid var(--c-red);
+            border-radius: 25px;
+            padding: 20px; margin-bottom: 25px; 
+            box-shadow: var(--kawaii-shadow);
+            position: relative;
+        }
+        
+        .schedule-widget::before {
+            content: '🍓'; position: absolute; top: -15px; left: -10px; 
+            font-size: 1.8rem; transform: rotate(-15deg);
+        }
+
+        .sw-header { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
+        .sw-icon {
+            width: 50px; height: 50px; background: var(--bg-strong-pink); 
+            border-radius: 50%; border: 3px solid var(--c-red);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; color: var(--c-red); 
+            transition: 0.3s ease;
+        }
+
+        .sw-main-info { flex: 1; }
+        .sw-label { 
+            font-size: 0.7rem; font-weight: 800; color: var(--text-light); 
+            background: var(--c-pink); padding: 3px 8px; border-radius: 10px;
+            text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 4px;
+        }
+        .sw-class { font-size: 1.15rem; font-weight: 800; color: var(--c-red); line-height: 1.1; }
+
+        .sw-progress-container { height: 12px; background: var(--bg-strong-pink); border-radius: 10px; overflow: hidden; margin: 15px 0; border: 2px solid var(--c-pink); }
+        .sw-progress-bar { height: 100%; background: var(--c-red); width: 0%; border-radius: 5px; transition: width 0.8s ease; }
+
+        .sw-footer { display: flex; justify-content: space-between; align-items: center; }
+        .sw-detail { font-size: 0.8rem; font-weight: 800; color: var(--c-red); }
+        .sw-next { font-size: 0.75rem; color: var(--text-main); font-weight: 700; text-align: right; max-width: 60%; line-height: 1.2; }
+
+        /* SELECTOR DÍAS */
+        .day-selector { 
+            display: flex; gap: 8px; margin-bottom: 25px; 
+        }
+        .day-btn { 
+            flex: 1; text-align: center; padding: 12px 0; font-size: 0.8rem; font-weight: 800; 
+            color: var(--c-red); background: var(--bg-white); 
+            border: 3px solid var(--c-red); border-radius: 20px; 
+            cursor: pointer; transition: 0.2s ease;
+            box-shadow: 2px 2px 0px var(--c-pink);
+        }
+        .day-btn.active { 
+            background: var(--c-red); color: var(--text-light); 
+            box-shadow: 0px 0px 0px var(--c-pink); 
+            transform: translate(2px, 2px); 
+        }
+
+        /* GRID Y CLASES CON COLORES DISTINTIVOS */
+        .schedule-grid { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+        
+        .class-card {
+            border-radius: 20px; padding: 15px 20px; 
+            display: flex; align-items: center; justify-content: space-between; 
+            border: 3px solid var(--c-pink);
+            box-shadow: var(--kawaii-shadow);
+            position: relative; transition: all 0.2s ease;
+        }
+
+        .cc-info { display: flex; flex-direction: column; gap: 6px; }
+        .cc-name { font-size: 1rem; font-weight: 800; color: var(--text-main); }
+        
+        .cc-time { 
+            font-size: 0.75rem; font-weight: 700; color: var(--text-main);
+            padding: 4px 10px; border-radius: 12px;
+            display: inline-block; width: fit-content;
+        }
+
+        /* COLORES PASTEL KAWAII Y FONDOS OPACOS PARA LA HORA */
+        .bg-costos { background: #FFE5EC; } 
+        .bg-costos .cc-time { background: #FFC0D3; } 
+
+        .bg-hab { background: #E6F2FF; }    
+        .bg-hab .cc-time { background: #B3D9FF; }    
+
+        .bg-prob { background: #FFF8DC; }   
+        .bg-prob .cc-time { background: #FFE499; }   
+
+        .bg-marco { background: #E6FFE6; }  
+        .bg-marco .cc-time { background: #B3FFB3; }  
+
+        .bg-merca { background: #FFEBE6; }  
+        .bg-merca .cc-time { background: #FFC2B3; }  
+
+        .bg-alg { background: #F0E6FF; }    
+        .bg-alg .cc-time { background: #D9B3FF; }    
+
+        .bg-eco { background: #E0FFFF; }    
+        .bg-eco .cc-time { background: #B3FFFF; }    
+
+        /* CLASE EN CURSO (Animación de salto) */
+        @keyframes kawaii-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .class-card.active-class {
+            border-color: var(--c-red);
+            background: var(--bg-white);
+            animation: kawaii-bounce 2s infinite;
+            z-index: 10;
+        }
+        .current-indicator {
+            position: absolute; top: -12px; right: 15px;
+            background: var(--c-red); color: var(--bg-white);
+            font-size: 0.65rem; font-weight: 800; padding: 4px 12px;
+            border-radius: 12px; letter-spacing: 1px;
+            border: 2px solid var(--bg-white);
+            box-shadow: 2px 2px 0px var(--c-pink);
+            z-index: 11;
+        }
+
+        /* LLUVIA FRESAS Y FLORES */
+        .falling-item {
+            position: fixed; top: -50px; font-size: 1.8rem;
+            animation: fall linear forwards; z-index: 999;
+            pointer-events: none;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* MODAL DE MENSAJE SECRETO */
+        .secret-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 182, 193, 0.8); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s ease; padding: 20px;
+        }
+        .secret-modal.show { opacity: 1; pointer-events: auto; }
+        .secret-content {
+            background: var(--bg-white); padding: 35px 25px; border-radius: 30px;
+            text-align: center; border: 4px solid var(--c-red);
+            box-shadow: 6px 6px 0px var(--c-pink); position: relative; 
+            max-width: 320px; transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .secret-modal.show .secret-content { transform: scale(1); }
+        .secret-content h3 { color: var(--c-red); margin-bottom: 15px; font-size: 1.5rem; }
+        .secret-content p { color: var(--text-main); font-weight: 700; font-size: 1.1rem; line-height: 1.4; }
+        .close-secret {
+            position: absolute; top: -15px; right: -15px; width: 40px; height: 40px;
+            background: var(--bg-white); border: 3px solid var(--c-red); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: var(--c-red); cursor: pointer; box-shadow: 2px 2px 0px var(--c-pink);
+        }
+        .close-secret:active { transform: translate(2px,2px); box-shadow: 0 0 0 transparent; }
+
+    </style>
+</head>
+<body id="mainBody">
+
+    <div class="mobile-container">
+        
+        <header class="hub-header" id="headerTag">
+            <div class="profile-wrapper">
+                <div class="orbiting-ring"></div>
+                <div class="profile-pic"><img src="icono.png" alt="Vanessa"></div>
+            </div>
+            <h1 id="secretNameTrigger">Vanessa</h1>
+            <div class="live-clock" id="liveClock">Cargando hora...</div>
+        </header>
+
+        <div class="schedule-widget">
+            <div class="sw-header">
+                <div class="sw-icon"><i id="statusIcon" class="fa-solid fa-heart"></i></div>
+                <div class="sw-main-info">
+                    <span class="sw-label" id="statusLabel">Clase Actual</span>
+                    <div class="sw-class" id="currentClass">Cargando...</div>
+                </div>
+            </div>
+            <div class="sw-progress-container"><div class="sw-progress-bar" id="progressBar"></div></div>
+            <div class="sw-footer">
+                <div class="sw-detail" id="timeLeft">Faltan --</div>
+                <div class="sw-next" id="nextClass">Siguiente: --</div>
+            </div>
+        </div>
+
+        <div class="day-selector">
+            <div class="day-btn" onclick="setDay(1)" id="btn-1">Lun</div>
+            <div class="day-btn" onclick="setDay(2)" id="btn-2">Mar</div>
+            <div class="day-btn" onclick="setDay(3)" id="btn-3">Mié</div>
+            <div class="day-btn" onclick="setDay(4)" id="btn-4">Jue</div>
+            <div class="day-btn" onclick="setDay(5)" id="btn-5">Vie</div>
+        </div>
+
+        <div class="schedule-grid" id="mainScheduleGrid"></div>
+    </div>
+
+    <div class="secret-modal" id="secretModal">
+        <div class="secret-content">
+            <div class="close-secret" onclick="document.getElementById('secretModal').classList.remove('show')">&times;</div>
+            <h3>💌 Para ti...</h3>
+            <p>Te amo ❤️<br><br>Entre el 12 y 19 hay una sorpresa esperándote ✨</p>
+        </div>
+    </div>
+
+<script>
+    const db = {
+        1: [ {s:14, d:2, n:"Costos Empresariales", c:"bg-costos", i:"fa-solid fa-calculator"}, {s:16, d:1, n:"Habilidades Directivas", c:"bg-hab", i:"fa-solid fa-users"}, {s:17, d:2, n:"Probabilidad y Estadística", c:"bg-prob", i:"fa-solid fa-chart-pie"}, {s:19, d:2, n:"Marco Legal", c:"bg-marco", i:"fa-solid fa-scale-balanced"} ],
+        2: [ {s:14, d:1, n:"Costos Empresariales", c:"bg-costos", i:"fa-solid fa-calculator"}, {s:15, d:2, n:"Mercadotecnia", c:"bg-merca", i:"fa-solid fa-bullhorn"}, {s:17, d:2, n:"Álgebra Lineal", c:"bg-alg", i:"fa-solid fa-square-root-variable"} ],
+        3: [ {s:14, d:1, n:"Costos Empresariales", c:"bg-costos", i:"fa-solid fa-calculator"}, {s:15, d:1, n:"Mercadotecnia", c:"bg-merca", i:"fa-solid fa-bullhorn"}, {s:16, d:1, n:"Economía Empresarial", c:"bg-eco", i:"fa-solid fa-chart-line"}, {s:17, d:2, n:"Marco Legal", c:"bg-marco", i:"fa-solid fa-scale-balanced"}, {s:19, d:1, n:"Álgebra Lineal", c:"bg-alg", i:"fa-solid fa-square-root-variable"}, {s:20, d:1, n:"Habilidades Directivas", c:"bg-hab", i:"fa-solid fa-users"} ],
+        4: [ {s:14, d:1, n:"Habilidades Directivas", c:"bg-hab", i:"fa-solid fa-users"}, {s:15, d:2, n:"Mercadotecnia", c:"bg-merca", i:"fa-solid fa-bullhorn"}, {s:17, d:2, n:"Probabilidad y Estadística", c:"bg-prob", i:"fa-solid fa-chart-pie"}, {s:19, d:2, n:"Economía Empresarial", c:"bg-eco", i:"fa-solid fa-chart-line"} ],
+        5: [ {s:14, d:1, n:"Costos Empresariales", c:"bg-costos", i:"fa-solid fa-calculator"}, {s:15, d:1, n:"Habilidades Directivas", c:"bg-hab", i:"fa-solid fa-users"}, {s:16, d:2, n:"Economía Empresarial", c:"bg-eco", i:"fa-solid fa-chart-line"}, {s:18, d:1, n:"Probabilidad y Estadística", c:"bg-prob", i:"fa-solid fa-chart-pie"}, {s:19, d:2, n:"Álgebra Lineal", c:"bg-alg", i:"fa-solid fa-square-root-variable"} ]
+    };
+
+    let currentDayIdx = new Date().getDay();
+    if(currentDayIdx === 0 || currentDayIdx === 6) currentDayIdx = 1;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setDay(currentDayIdx);
+        updateClock();
+        updateUI();
+        setInterval(updateClock, 1000);
+        setInterval(updateUI, 60000);
+    });
+
+    // LÓGICA DEL BOTÓN SECRETO (1 SOLO TOQUE EN SU NOMBRE)
+    document.getElementById('secretNameTrigger').addEventListener('click', () => {
+        document.getElementById('secretModal').classList.add('show');
+        if(navigator.vibrate) navigator.vibrate([40, 80, 40]); // Pequeña vibración de respuesta
+        createRain(); // Hace que lluevan fresas y flores como efecto especial
+    });
+
+    function updateClock() {
+        const now = new Date();
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        let dateStr = now.toLocaleDateString('es-ES', options);
+        dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        
+        let h = now.getHours();
+        let m = now.getMinutes();
+        let s = now.getSeconds();
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        
+        const timeStr = `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} ${ampm}`;
+        document.getElementById('liveClock').innerText = `${dateStr} • ${timeStr}`;
+    }
+
+    function setDay(idx) {
+        currentDayIdx = idx;
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`btn-${idx}`).classList.add('active');
+        renderSchedule(idx);
+        updateUI(); 
+    }
+
+    function formatTime12h(h) {
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        return `${h12}:00 ${ampm}`;
+    }
+
+    function formatTimeLeft(totalMinutes) {
+        if (totalMinutes <= 0) return "¡Ahora!";
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+        return h > 0 ? `${h}h ${m}m` : `${m} min`;
+    }
+
+    function renderSchedule(idx) {
+        const container = document.getElementById('mainScheduleGrid');
+        container.innerHTML = '';
+        const classes = db[idx];
+        if(!classes) return;
+        classes.forEach(cls => {
+            container.innerHTML += `
+                <div class="class-card ${cls.c}" data-start="${cls.s}" data-duration="${cls.d}"> 
+                    <div class="cc-info">
+                        <span class="cc-name">${cls.n}</span>
+                        <span class="cc-time"><i class="fa-regular fa-clock"></i> ${formatTime12h(cls.s)} - ${formatTime12h(cls.s+cls.d)}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function updateUI() {
+        const now = new Date();
+        const day = now.getDay();
+        const h = now.getHours();
+        const m = now.getMinutes();
+        const curTime = h + (m / 60);
+
+        const classEl = document.getElementById('currentClass');
+        const timeEl = document.getElementById('timeLeft');
+        const nextEl = document.getElementById('nextClass');
+        const labelEl = document.getElementById('statusLabel');
+        const barEl = document.getElementById('progressBar');
+        const iconEl = document.getElementById('statusIcon');
+
+        document.querySelectorAll('.class-card').forEach(c => {
+            c.classList.remove('active-class');
+            const ind = c.querySelector('.current-indicator');
+            if (ind) ind.remove();
+        });
+
+        if (day === 0 || day === 6) {
+            labelEl.innerText = "ESTADO";
+            classEl.innerText = "¡Fin de semana! 🌸";
+            timeEl.innerText = "Día libre";
+            nextEl.innerText = "Nos vemos el Lunes";
+            barEl.style.width = "0%";
+            iconEl.className = "fa-solid fa-cake-candles";
+            return;
+        }
+
+        const today = db[day];
+        const current = today.find(c => curTime >= c.s && curTime < (c.s + c.d));
+        const upcoming = today.filter(c => c.s > curTime).sort((a,b) => a.s - b.s);
+
+        if (current) {
+            labelEl.innerText = "EN CLASE";
+            classEl.innerText = current.n;
+            
+            iconEl.className = current.i; 
+            
+            const totalMin = current.d * 60;
+            const elapsedMin = (curTime - current.s) * 60;
+            const remain = Math.round(totalMin - elapsedMin);
+            
+            timeEl.innerText = `Termina en ${formatTimeLeft(remain)}`;
+            barEl.style.width = `${Math.min(100, (elapsedMin / totalMin) * 100)}%`;
+
+            if (upcoming.length > 0) {
+                const next = upcoming[0];
+                const minToNext = Math.round((next.s - curTime) * 60);
+                nextEl.innerText = `Sig: ${next.n} (en ${formatTimeLeft(minToNext)})`;
+            } else {
+                nextEl.innerText = "Última clase del día 🍰";
+            }
+
+            let activeBtn = document.querySelector('.day-btn.active');
+            let viewDay = activeBtn ? parseInt(activeBtn.id.split('-')[1]) : 1;
+            
+            if (day === viewDay) {
+                let activeCard = document.querySelector(`.class-card[data-start="${current.s}"]`);
+                if (activeCard) {
+                    activeCard.classList.add('active-class');
+                    const badge = document.createElement('div');
+                    badge.className = 'current-indicator';
+                    badge.innerHTML = '¡AHORA!';
+                    activeCard.appendChild(badge);
+                }
+            }
+
+        } else if (upcoming.length > 0) {
+            const next = upcoming[0];
+            labelEl.innerText = "PRÓXIMA CLASE";
+            classEl.innerText = next.n;
+            iconEl.className = "fa-solid fa-clock";
+            
+            const remainToStart = Math.round((next.s - curTime) * 60);
+            timeEl.innerText = `Empieza en ${formatTimeLeft(remainToStart)}`;
+            barEl.style.width = "0%";
+            nextEl.innerText = `Horario: ${formatTime12h(next.s)}`;
+
+        } else {
+            labelEl.innerText = "ESTADO";
+            classEl.innerText = "Día terminado 🍓";
+            iconEl.className = "fa-solid fa-house-user";
+            timeEl.innerText = "¡A descansar!";
+            barEl.style.width = "0%";
+            
+            const nextDay = (day >= 5) ? 1 : day + 1;
+            const nextDayClass = db[nextDay][0];
+            const dayName = (day >= 5) ? "Lunes" : "Mañana";
+            nextEl.innerText = `Próxima: ${dayName} a las ${formatTime12h(nextDayClass.s)}`;
+        }
+    }
+
+    function createRain() {
+        const items = ['🍓', '🌸'];
+        for(let i=0; i<25; i++) {
+            setTimeout(() => {
+                const drop = document.createElement('div');
+                drop.classList.add('falling-item');
+                drop.innerText = items[Math.floor(Math.random() * items.length)];
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                
+                document.body.appendChild(drop);
+                
+                setTimeout(() => {
+                    drop.remove();
+                }, 5000);
+            }, i * 150);
+        }
+    }
+
+    // REGISTRO DEL SERVICE WORKER PARA LA PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registrado con éxito', reg))
+                .catch(err => console.error('Error al registrar el Service Worker', err));
+        });
+    }
+</script>
+</body>
+</html>

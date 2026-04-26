@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Cuentas 🔐</title>
+    
+    <link rel="icon" type="image/png" href="iconopag.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-strong-pink: #FFB6C1; 
+            --bg-white: #FFFFFF;
+            --c-red: #FF3366; 
+            --c-pink: #FF6688; 
+            --text-main: #4A4A4A; 
+            --text-light: #FFFFFF;
+            --kawaii-shadow: 4px 4px 0px var(--c-pink);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Varela Round', sans-serif; }
+
+        body { 
+            background: var(--bg-strong-pink); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            background-image: radial-gradient(rgba(255,255,255,0.7) 3px, transparent 3px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .mobile-container {
+            width: 100%; max-width: 500px; margin: 0 auto;
+            padding: calc(env(safe-area-inset-top, 20px) + 20px) 25px 40px 25px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* HEADER */
+        .header-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .back-btn { 
+            background: var(--bg-white); color: var(--c-red); 
+            width: 45px; height: 45px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            text-decoration: none; font-size: 1.2rem;
+            border: 3px solid var(--c-red); box-shadow: 2px 2px 0px var(--c-pink);
+            transition: 0.2s ease;
+        }
+        .back-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 transparent; }
+        .page-title { font-size: 1.5rem; font-weight: 800; color: var(--c-red); text-shadow: 2px 2px 0px var(--bg-white); }
+        .spacer { width: 45px; } 
+
+        /* BUSCADOR */
+        .search-box {
+            position: relative; margin-bottom: 15px;
+        }
+        .search-box i {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            color: var(--c-pink); font-size: 1.1rem;
+        }
+        .search-input {
+            width: 100%; background: var(--bg-white); border: 3px solid var(--bg-white);
+            border-radius: 20px; padding: 12px 15px 12px 40px; font-size: 0.95rem;
+            color: var(--text-main); outline: none; box-shadow: 2px 2px 0px var(--c-pink);
+            transition: 0.2s ease; font-weight: 600;
+        }
+        .search-input:focus { border-color: var(--c-red); }
+
+        /* BOTÓN PRINCIPAL */
+        .main-add-btn {
+            width: 100%; background: var(--c-red); color: var(--bg-white);
+            border: 3px solid var(--bg-white); border-radius: 20px;
+            padding: 15px; font-size: 1.05rem; font-weight: 800;
+            box-shadow: 3px 3px 0px var(--c-pink); cursor: pointer;
+            transition: 0.2s ease; display: flex; justify-content: center; align-items: center; gap: 10px;
+            margin-bottom: 25px;
+        }
+        .main-add-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 transparent; }
+
+        /* LISTA DE CUENTAS */
+        .accounts-container { display: flex; flex-direction: column; gap: 18px; padding-bottom: 20px;}
+        .empty-state { text-align: center; color: var(--text-main); font-weight: 700; margin-top: 20px; opacity: 0.8; }
+        .empty-state i { font-size: 2.5rem; color: var(--c-pink); margin-bottom: 10px; }
+
+        .account-card {
+            background: var(--bg-white);
+            border-radius: 20px; padding: 15px 20px; 
+            border: 3px solid var(--c-pink);
+            box-shadow: var(--kawaii-shadow);
+            position: relative;
+            animation: popIn 0.3s ease forwards;
+        }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .acc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px dashed #FFE5EC; }
+        .acc-platform { font-size: 1.1rem; font-weight: 800; color: var(--c-red); }
+        .acc-icon { font-size: 1.2rem; color: var(--c-pink); }
+
+        .acc-detail { margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center;}
+        .acc-detail i { color: var(--c-pink); margin-right: 8px; width: 15px; text-align: center; }
+        .acc-detail span { color: var(--text-main); word-break: break-all; }
+        
+        .password-box { 
+            display: flex; align-items: center; background: #FFF0F5; 
+            padding: 8px 12px; border-radius: 12px; margin-top: 10px; 
+            border: 1px solid #FFC0D3;
+        }
+        .pwd-text { flex: 1; font-family: monospace; font-size: 1.1rem; letter-spacing: 1px; font-weight: bold; color: var(--c-red); overflow-wrap: break-word; word-break: break-all; padding-right: 10px;}
+        
+        .action-btns { display: flex; gap: 8px; }
+        .icon-btn {
+            width: 35px; height: 35px; border-radius: 50%;
+            background: var(--bg-white); color: var(--c-red);
+            border: 2px solid var(--c-red);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; cursor: pointer; transition: 0.2s ease;
+            flex-shrink: 0;
+        }
+        .icon-btn:active { background: var(--c-red); color: var(--bg-white); }
+
+        .delete-btn {
+            position: absolute; top: -15px; right: -15px;
+            width: 35px; height: 35px; background: var(--bg-white); color: var(--text-main);
+            border: 3px solid var(--c-pink); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 0.8rem; cursor: pointer;
+            transition: 0.2s ease;
+        }
+        .delete-btn:active { transform: scale(0.9); }
+        
+        /* TOAST Y MODALES */
+        .custom-toast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--bg-white); color: var(--c-red);
+            border: 3px solid var(--c-red); border-radius: 20px;
+            padding: 12px 25px; font-weight: 800; font-size: 0.95rem;
+            box-shadow: 4px 4px 0px var(--c-pink);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999; display: flex; align-items: center; gap: 10px;
+        }
+        .custom-toast.show { top: calc(env(safe-area-inset-top, 20px) + 20px); }
+
+        .custom-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 182, 193, 0.8); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s ease; padding: 20px;
+        }
+        .custom-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        
+        .custom-modal-box {
+            background: var(--bg-white); padding: 30px 25px; border-radius: 30px;
+            text-align: center; border: 4px solid var(--c-red);
+            box-shadow: 6px 6px 0px var(--c-pink); position: relative; 
+            max-width: 320px; width: 100%; transform: scale(0.8); 
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .custom-modal-overlay.show .custom-modal-box { transform: scale(1); }
+        
+        .custom-modal-icon { font-size: 2.5rem; margin-bottom: 10px; color: var(--c-red); }
+        .custom-modal-title { color: var(--c-red); font-size: 1.4rem; font-weight: 800; margin-bottom: 20px; }
+        
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px;}
+        .modal-btn {
+            flex: 1; padding: 12px; border-radius: 20px; font-weight: 800; font-size: 0.95rem;
+            cursor: pointer; transition: 0.2s ease; border: 3px solid transparent;
+            display: flex; justify-content: center; align-items: center; gap: 5px;
+        }
+        .modal-btn-cancel { background: var(--bg-white); color: var(--text-main); border-color: #ccc; }
+        .modal-btn-action { background: var(--c-red); color: var(--bg-white); border-color: var(--bg-white); box-shadow: 2px 2px 0px var(--c-pink); }
+
+        .input-group { margin-bottom: 12px; position: relative; }
+        .cute-input {
+            width: 100%; background: #F0F8FF; border: 2px solid #87CEFA;
+            border-radius: 15px; padding: 12px 15px; font-size: 0.95rem;
+            color: var(--text-main); outline: none; transition: 0.2s ease;
+        }
+        .cute-input:focus { border-color: var(--c-red); background: var(--bg-white); }
+
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <div class="header-nav">
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h1 class="page-title">Mis Cuentas 🔐</h1>
+            <div class="spacer"></div>
+        </div>
+
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar plataforma o usuario..." onkeyup="filterAccounts()">
+        </div>
+
+        <button class="main-add-btn" onclick="openCreatorModal()">
+            <i class="fa-solid fa-plus"></i> Nueva Contraseña
+        </button>
+
+        <div class="accounts-container" id="accountsList"></div>
+    </div>
+
+    <div class="custom-toast" id="appToast">
+        <i class="fa-solid fa-circle-exclamation" id="toastIcon"></i>
+        <span id="toastMsg">Mensaje aquí</span>
+    </div>
+
+    <div class="custom-modal-overlay" id="creatorModal">
+        <div class="custom-modal-box">
+            <div class="custom-modal-icon">🔐</div>
+            <div class="custom-modal-title">Guardar Cuenta</div>
+            
+            <div class="input-group">
+                <input type="text" id="accPlatform" class="cute-input" placeholder="Plataforma (Ej. Netflix) 🎬">
+            </div>
+            <div class="input-group">
+                <input type="text" id="accUser" class="cute-input" placeholder="Usuario o Correo 📧">
+            </div>
+            <div class="input-group">
+                <input type="text" id="accPass" class="cute-input" placeholder="Contraseña 🔑">
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeCreatorModal()">Cancelar</button>
+                <button class="modal-btn modal-btn-action" onclick="saveAccount()"><i class="fa-solid fa-check"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-modal-overlay" id="confirmModal">
+        <div class="custom-modal-box">
+            <div class="custom-modal-icon"><i class="fa-solid fa-trash-can"></i></div>
+            <div class="custom-modal-text" style="color: var(--text-main); font-weight: 800; margin-bottom: 20px;">¿Segura que quieres borrar esta cuenta?</div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeConfirmModal()">Cancelar</button>
+                <button class="modal-btn modal-btn-action" id="confirmDeleteBtn">Sí, borrar</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let accountIdToDelete = null;
+
+    document.addEventListener('DOMContentLoaded', loadAccounts);
+
+    function showToast(message, iconClass = 'fa-solid fa-circle-exclamation') {
+        const toast = document.getElementById('appToast');
+        document.getElementById('toastMsg').innerText = message;
+        document.getElementById('toastIcon').className = iconClass;
+        toast.classList.add('show');
+        if(navigator.vibrate) navigator.vibrate([20, 40, 20]);
+        setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    function openCreatorModal() {
+        document.getElementById('accPlatform').value = '';
+        document.getElementById('accUser').value = '';
+        document.getElementById('accPass').value = '';
+        document.getElementById('creatorModal').classList.add('show');
+        if(navigator.vibrate) navigator.vibrate(40);
+    }
+
+    function closeCreatorModal() { document.getElementById('creatorModal').classList.remove('show'); }
+
+    function openConfirmModal(id) {
+        accountIdToDelete = id;
+        document.getElementById('confirmModal').classList.add('show');
+        if(navigator.vibrate) navigator.vibrate(40);
+    }
+
+    function closeConfirmModal() {
+        accountIdToDelete = null;
+        document.getElementById('confirmModal').classList.remove('show');
+    }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+        if (accountIdToDelete !== null) {
+            executeDeleteAccount(accountIdToDelete);
+            closeConfirmModal();
+        }
+    });
+
+    function saveAccount() {
+        const platform = document.getElementById('accPlatform').value.trim();
+        const user = document.getElementById('accUser').value.trim();
+        const pass = document.getElementById('accPass').value.trim();
+
+        if (platform === '' || pass === '') {
+            showToast('¡Necesitas poner la plataforma y la contraseña! 🍓');
+            return;
+        }
+
+        const newAccount = { id: Date.now(), platform, user: user || 'No especificado', pass };
+        let accounts = JSON.parse(localStorage.getItem('vane_cuentas')) || [];
+        accounts.unshift(newAccount);
+        localStorage.setItem('vane_cuentas', JSON.stringify(accounts));
+        
+        closeCreatorModal();
+        loadAccounts();
+        if(navigator.vibrate) navigator.vibrate([30, 50, 30]);
+    }
+
+    function loadAccounts() {
+        const container = document.getElementById('accountsList');
+        let accounts = JSON.parse(localStorage.getItem('vane_cuentas')) || [];
+        container.innerHTML = '';
+
+        if (accounts.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-ghost"></i><p>No has guardado ninguna cuenta</p></div>`;
+            return;
+        }
+
+        accounts.forEach(acc => {
+            const accEl = document.createElement('div');
+            accEl.className = 'account-card';
+            accEl.dataset.platform = acc.platform.toLowerCase();
+            accEl.dataset.user = acc.user.toLowerCase();
+            accEl.innerHTML = `
+                <button class="delete-btn" onclick="openConfirmModal(${acc.id})"><i class="fa-solid fa-xmark"></i></button>
+                <div class="acc-header"><span class="acc-platform">${acc.platform}</span><i class="fa-solid fa-star acc-icon"></i></div>
+                <div class="acc-detail"><i class="fa-solid fa-user"></i><span>${acc.user}</span></div>
+                <div class="password-box">
+                    <div class="pwd-text">${acc.pass}</div>
+                    <div class="action-btns">
+                        <button class="icon-btn" onclick="copyPassword('${acc.pass}')"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                </div>`;
+            container.appendChild(accEl);
+        });
+    }
+
+    function copyPassword(pass) {
+        navigator.clipboard.writeText(pass).then(() => { showToast('¡Copiado! ✨', 'fa-solid fa-check'); });
+    }
+
+    function executeDeleteAccount(id) {
+        let accounts = JSON.parse(localStorage.getItem('vane_cuentas')) || [];
+        accounts = accounts.filter(acc => acc.id !== id);
+        localStorage.setItem('vane_cuentas', JSON.stringify(accounts));
+        loadAccounts();
+    }
+
+    function filterAccounts() {
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        document.querySelectorAll('.account-card').forEach(card => {
+            const platform = card.dataset.platform;
+            const user = card.dataset.user;
+            card.style.display = (platform.includes(searchText) || user.includes(searchText)) ? 'block' : 'none';
+        });
+    }
+
+    // --- REGISTRO DEL SERVICE WORKER (Actualización Automática) ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload(); 
+                        }
+                    };
+                };
+            });
+            let refreshing;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                refreshing = true;
+                window.location.reload();
+            });
+        });
+    }
+</script>
+</body>
+</html>

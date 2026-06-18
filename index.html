@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Horario 🌸</title>
+    
+    <link rel="icon" type="image/png" href="iconopag.png">
+    <link rel="apple-touch-icon" href="iconopag.png">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFB6C1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-strong-pink: #FFB6C1; 
+            --bg-white: #FFFFFF;
+            --c-red: #FF3366; 
+            --c-pink: #FF6688; 
+            --text-main: #4A4A4A; 
+            --text-light: #FFFFFF;
+            --kawaii-shadow: 4px 4px 0px var(--c-pink);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Varela Round', sans-serif; }
+        body { 
+            background: var(--bg-strong-pink); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            background-image: radial-gradient(rgba(255,255,255,0.7) 3px, transparent 3px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+        }
+        .mobile-container {
+            width: 100%; max-width: 600px; margin: 0 auto;
+            padding: calc(env(safe-area-inset-top, 20px) + 20px) 25px 30px 25px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* BOTONES DE NAVEGACIÓN EN LAS ESQUINAS SUPERIORES */
+        .nav-buttons { 
+            position: absolute;
+            top: calc(env(safe-area-inset-top, 20px) + 20px);
+            left: 20px;
+            right: 20px;
+            display: flex; 
+            justify-content: space-between; 
+            z-index: 100;
+            pointer-events: none;
+        }
+        .nav-btn {
+            pointer-events: auto;
+            text-decoration: none; 
+            color: var(--c-red);
+            background: var(--bg-white); 
+            width: 50px; height: 50px; 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s ease; 
+            border: 3px solid var(--c-red);
+            box-shadow: 2px 2px 0px var(--c-pink); 
+        }
+        .nav-btn:active { 
+            background: var(--c-red); 
+            color: var(--bg-white);
+            transform: translate(2px, 2px); 
+            box-shadow: 0px 0px 0px transparent;
+        }
+        .nav-btn i { font-size: 1.2rem; }
+
+        /* HEADER KAWAII CON ANIMACIÓN */
+        .hub-header { text-align: center; margin-bottom: 30px; position: relative; }
+        
+        .profile-wrapper { 
+            position: relative; width: 130px; height: 130px; 
+            margin: 0 auto 15px auto; 
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        .orbiting-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 4px dashed var(--c-red);
+            animation: spin 10s linear infinite;
+            z-index: 1;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .profile-pic {
+            width: 105px; height: 105px; border-radius: 50%;
+            background: var(--bg-white); padding: 4px; 
+            border: 4px solid var(--c-red);
+            box-shadow: 0 0 10px rgba(255, 51, 102, 0.3);
+            position: relative; z-index: 2; overflow: hidden;
+            cursor: pointer; transition: 0.2s ease;
+        }
+        .profile-pic:active { transform: scale(0.9); }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        .hub-header h1 { 
+            font-size: 1.8rem; font-weight: 800; color: var(--c-red); 
+            text-shadow: 2px 2px 0px var(--bg-white); 
+            margin-bottom: 8px; letter-spacing: 1px;
+            display: inline-block; cursor: pointer; transition: 0.2s ease;
+        }
+        .hub-header h1:active { transform: scale(0.9); }
+        
+        .live-clock { 
+            font-size: 0.85rem; font-weight: 700; color: var(--text-main); 
+            background: var(--bg-white); padding: 6px 18px; 
+            border-radius: 20px; border: 2px solid var(--c-pink);
+            box-shadow: 2px 2px 0px var(--c-pink);
+            display: block; width: fit-content; margin: 0 auto;
+        }
+
+        /* WIDGET ORIGINAL DE ESTADO (SOLO PARA VANESSA) */
+        .schedule-widget {
+            background: var(--bg-white);
+            border: 4px solid var(--c-red);
+            border-radius: 25px;
+            padding: 20px; margin-bottom: 20px; 
+            box-shadow: var(--kawaii-shadow);
+            position: relative;
+        }
+        .schedule-widget::before {
+            content: '✨'; position: absolute; top: -15px; left: -10px; 
+            font-size: 1.8rem; transform: rotate(-15deg);
+        }
+        .sw-header { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
+        .sw-icon {
+            width: 50px; height: 50px; background: var(--bg-strong-pink); 
+            border-radius: 50%; border: 3px solid var(--c-red);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; color: var(--c-red); transition: 0.3s ease;
+        }
+        .sw-main-info { flex: 1; }
+        .sw-label { 
+            font-size: 0.7rem; font-weight: 800; color: var(--text-light); 
+            background: var(--c-pink); padding: 3px 8px; border-radius: 10px;
+            text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 4px;
+        }
+        .sw-class { font-size: 1.15rem; font-weight: 800; color: var(--c-red); line-height: 1.1; }
+        .sw-progress-container { height: 12px; background: var(--bg-strong-pink); border-radius: 10px; overflow: hidden; margin: 15px 0; border: 2px solid var(--c-pink); }
+        .sw-progress-bar { height: 100%; background: var(--c-red); width: 0%; border-radius: 5px; transition: width 0.8s ease; }
+        .sw-footer { display: flex; justify-content: space-between; align-items: center; }
+        .sw-detail { font-size: 0.8rem; font-weight: 800; color: var(--c-red); }
+        .sw-next { font-size: 0.75rem; color: var(--text-main); font-weight: 700; text-align: right; max-width: 60%; line-height: 1.2; }
+
+        /* SELECTOR DÍAS (COMO ESTABA ANTES) */
+        .day-selector { display: flex; gap: 6px; margin-bottom: 25px; }
+        .day-btn { 
+            flex: 1; text-align: center; padding: 12px 0; font-size: 0.75rem; font-weight: 800; 
+            color: var(--c-red); background: var(--bg-white); 
+            border: 3px solid var(--c-red); border-radius: 15px; 
+            cursor: pointer; transition: 0.2s ease;
+            box-shadow: 2px 2px 0px var(--c-pink);
+        }
+        .day-btn.active { 
+            background: var(--c-red); color: var(--text-light); 
+            box-shadow: 0px 0px 0px var(--c-pink); transform: translate(2px, 2px); 
+        }
+
+        /* DOS COLUMNAS DE HORARIO */
+        .columns-wrapper { display: flex; gap: 15px; width: 100%; }
+        .col { flex: 1; min-width: 0; }
+        .col-title { text-align: center; color: var(--c-red); font-size: 1.3rem; font-weight: 900; margin-bottom: 12px; text-shadow: 1px 1px 0px var(--bg-white); }
+
+        /* GRID Y CLASES */
+        .schedule-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .class-card {
+            border-radius: 18px; padding: 12px 10px; 
+            display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;
+            border: 3px solid var(--c-pink); box-shadow: var(--kawaii-shadow);
+            position: relative; transition: all 0.2s ease;
+        }
+        .cc-name { font-size: 0.9rem; font-weight: 800; color: var(--text-main); line-height: 1.1; }
+        .cc-time { 
+            font-size: 0.75rem; font-weight: 700; color: var(--text-main);
+            padding: 4px 10px; border-radius: 12px; display: inline-block; width: fit-content;
+        }
+
+        /* COLORES MATERIAS */
+        .bg-trabajo { background: #E6F2FF; } .bg-trabajo .cc-time { background: #B3D9FF; } 
+        .bg-clase { background: #FFF8DC; }   .bg-clase .cc-time { background: #FFE499; } 
+
+        @keyframes kawaii-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        .class-card.active-class {
+            border-color: var(--c-red); background: var(--bg-white);
+            animation: kawaii-bounce 2s infinite; z-index: 10;
+        }
+        .current-indicator {
+            position: absolute; top: -12px; right: 50%; transform: translateX(50%);
+            background: var(--c-red); color: var(--bg-white);
+            font-size: 0.65rem; font-weight: 800; padding: 4px 12px;
+            border-radius: 12px; letter-spacing: 1px; border: 2px solid var(--bg-white);
+            box-shadow: 2px 2px 0px var(--c-pink); z-index: 11; white-space: nowrap;
+        }
+
+        .falling-item {
+            position: fixed; top: -50px; font-size: 1.8rem;
+            animation: fall linear forwards; z-index: 999; pointer-events: none;
+        }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        /* MODALES */
+        .secret-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 182, 193, 0.8); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s ease; padding: 20px;
+        }
+        .secret-modal.show { opacity: 1; pointer-events: auto; }
+        .secret-content {
+            background: var(--bg-white); padding: 35px 25px; border-radius: 30px;
+            text-align: center; border: 4px solid var(--c-red);
+            box-shadow: 6px 6px 0px var(--c-pink); position: relative; 
+            max-width: 320px; width: 100%; transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .secret-modal.show .secret-content { transform: scale(1); }
+        .secret-content h3 { color: var(--c-red); margin-bottom: 15px; font-size: 1.5rem; }
+        .secret-content p { color: var(--text-main); font-weight: 700; font-size: 1.1rem; line-height: 1.4; }
+        
+        .close-secret {
+            position: absolute; top: -15px; right: -15px; width: 40px; height: 40px;
+            background: var(--bg-white); border: 3px solid var(--c-red); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: var(--c-red); cursor: pointer; box-shadow: 2px 2px 0px var(--c-pink);
+        }
+        .close-secret:active { transform: translate(2px,2px); box-shadow: 0 0 0 transparent; }
+
+        /* BOTONES DEL MODAL DE RESPALDO */
+        .backup-btn {
+            width: 100%; background: var(--c-red); color: var(--bg-white);
+            border: 3px solid var(--bg-white); border-radius: 20px;
+            padding: 12px; font-size: 1rem; font-weight: 800;
+            box-shadow: 3px 3px 0px var(--c-pink); cursor: pointer;
+            transition: 0.2s ease; display: flex; justify-content: center; align-items: center; gap: 10px;
+            margin-bottom: 15px;
+        }
+        .backup-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 transparent; }
+        .backup-btn.upload { background: var(--bg-white); color: var(--c-red); border-color: var(--c-red); box-shadow: 3px 3px 0px var(--c-pink); }
+        .backup-btn.upload:active { background: var(--c-red); color: var(--bg-white); }
+    </style>
+</head>
+<body id="mainBody">
+
+    <div class="mobile-container">
+        
+        <div class="nav-buttons">
+            <a href="notas.html" class="nav-btn" title="Ir a Notas">
+                <i class="fa-solid fa-note-sticky"></i>
+            </a>
+            <a href="contraseñas.html" class="nav-btn" title="Ir a Contraseñas">
+                <i class="fa-solid fa-key"></i>
+            </a>
+        </div>
+        
+        <header class="hub-header" id="headerTag">
+            <div class="profile-wrapper">
+                <div class="orbiting-ring"></div>
+                <div class="profile-pic" id="secretIconTrigger">
+                    <img src="icono.png" alt="Vanessa">
+                </div>
+            </div>
+            <h1 onclick="openBackupModal()">Vanessa</h1>
+            <div class="live-clock" id="liveClock">Cargando hora...</div>
+        </header>
+
+        <!-- WIDGET PRINCIPAL (SOLO VANESSA) -->
+        <div class="schedule-widget">
+            <div class="sw-header">
+                <div class="sw-icon"><i id="statusIcon" class="fa-solid fa-heart"></i></div>
+                <div class="sw-main-info">
+                    <span class="sw-label" id="statusLabel">Clase Actual</span>
+                    <div class="sw-class" id="currentClass">Cargando...</div>
+                </div>
+            </div>
+            <div class="sw-progress-container"><div class="sw-progress-bar" id="progressBar"></div></div>
+            <div class="sw-footer">
+                <div class="sw-detail" id="timeLeft">Faltan --</div>
+                <div class="sw-next" id="nextClass">Siguiente: --</div>
+            </div>
+        </div>
+
+        <!-- SELECTOR DE DÍAS COMO ESTABA ANTES -->
+        <div class="day-selector">
+            <div class="day-btn" onclick="setDay(1)" id="btn-1">Lun</div>
+            <div class="day-btn" onclick="setDay(2)" id="btn-2">Mar</div>
+            <div class="day-btn" onclick="setDay(3)" id="btn-3">Mié</div>
+            <div class="day-btn" onclick="setDay(4)" id="btn-4">Jue</div>
+            <div class="day-btn" onclick="setDay(5)" id="btn-5">Vie</div>
+            <div class="day-btn" onclick="setDay(6)" id="btn-6">Sáb</div>
+        </div>
+
+        <!-- COLUMNAS DE HORARIO -->
+        <div class="columns-wrapper">
+            <div class="col">
+                <h2 class="col-title">Yo</h2>
+                <div class="schedule-grid" id="grid-yo"></div>
+            </div>
+            <div class="col">
+                <h2 class="col-title">Genaro</h2>
+                <div class="schedule-grid" id="grid-genaro"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL SECRETO (FOTO) -->
+    <div class="secret-modal" id="secretModal">
+        <div class="secret-content">
+            <div class="close-secret" onclick="document.getElementById('secretModal').classList.remove('show')">&times;</div>
+            <h3>💌 Para ti...</h3>
+            <p id="secretMessageText">Cargando mensaje...</p>
+        </div>
+    </div>
+
+    <!-- MODAL DE RESPALDO (NOMBRE) -->
+    <div class="secret-modal" id="backupModal">
+        <div class="secret-content">
+            <div class="close-secret" onclick="document.getElementById('backupModal').classList.remove('show')">&times;</div>
+            <h3>💾 Respaldo</h3>
+            <p style="margin-bottom: 20px; font-size: 0.95rem;">Guarda o recupera tus notas y contraseñas.</p>
+            
+            <button class="backup-btn" onclick="descargarRespaldo()">
+                <i class="fa-solid fa-download"></i> Descargar datos
+            </button>
+            
+            <label class="backup-btn upload">
+                <i class="fa-solid fa-upload"></i> Cargar datos
+                <input type="file" accept=".json" style="display:none;" onchange="cargarRespaldo(event)">
+            </label>
+        </div>
+    </div>
+
+<script>
+    // BASE DE DATOS VANESSA (Tu Widget usa solo esta info)
+    const dbYo = {
+        1: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        2: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        3: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        4: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        5: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        6: [] // Sábado libre (No aparecerá ninguna tarjeta)
+    };
+
+    // BASE DE DATOS GENARO
+    const dbGenaro = {
+        1: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        2: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        3: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        4: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        5: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
+        6: [ {s:7.5, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ]
+    };
+
+    const mensajesBonitos = [
+        "Eres la niña de mis ojos ❤️",
+        "Te amo más de lo que las palabras pueden expresar ✨",
+        "Cada día me enamoro más de ti 🌸",
+        "Eres mi lugar favorito en el mundo 🍓",
+        "Gracias por hacerme siempre feliz 💕",
+        "Mi vida es mucho más bonita desde que estás en ella 💖",
+        "te amo muchisimo 👑",
+        "Siempre pienso en ti, incluso cuando estoy distraído 💭",
+        "Te amo mi corazón de melón 💘",
+        "Eres mi casualidad más hermosa 🌟",
+        "Qué suerte tengo de tenerte a mi lado 🍀",
+        "Eres el amor de mi vida 💍",
+        "No hay nadie en el universo como tú 🌌",
+        "Amo tu sonrisa ☀️",
+        "Me haces querer ser una mejor persona cada día 🌱",
+        "Contigo el tiempo se detiene ⏳",
+        "Eres mi sueño hecho realidad 🌙",
+        "Abrazarte es mi terapia favorita 🫂",
+        "Te amo de aquí a la luna... a pasitos de tortuga 🐢",
+        "Eres la niña más bonita 💓",
+        "Mi parte favorita del día es cuando hablo contigo 📱",
+        "Haces que mi mundo se llene de colores 🎨",
+        "Tienes el don de hacerme sonreír siempre 😊",
+        "Siempre voy a cuidarte y amarte 🛡️",
+        "Eres la casualidad más bonita que llegó a mi vida 🎈",
+        "Amo cada pequeño detalle de ti 🔍",
+        "Mi corazón salta de alegría cuando te veo 💓",
+        "Te amo infinitamente, mi niña preciosa ♾️"
+    ];
+
+    let currentDayIdx = new Date().getDay();
+    if(currentDayIdx === 0) currentDayIdx = 1;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setDay(currentDayIdx);
+        updateClock();
+        updateUI();
+        setInterval(updateClock, 1000);
+        setInterval(updateUI, 60000);
+    });
+
+    document.getElementById('secretIconTrigger').addEventListener('click', () => {
+        const mensajeAleatorio = mensajesBonitos[Math.floor(Math.random() * mensajesBonitos.length)];
+        document.getElementById('secretMessageText').innerText = mensajeAleatorio;
+        document.getElementById('secretModal').classList.add('show');
+        if(navigator.vibrate) navigator.vibrate([40, 80, 40]);
+        createRain(); 
+    });
+
+    // ABRE EL MODAL DE RESPALDO AL TOCAR EL NOMBRE
+    function openBackupModal() {
+        document.getElementById('backupModal').classList.add('show');
+        if(navigator.vibrate) navigator.vibrate(40);
+    }
+
+    // DESCARGAR DATOS
+    function descargarRespaldo() {
+        const notas = localStorage.getItem('vane_notas');
+        const cuentas = localStorage.getItem('vane_cuentas');
+
+        if (!notas && !cuentas) {
+            alert('Aún no hay datos guardados para respaldar.');
+            return;
+        }
+
+        const backupData = { notas: notas ? JSON.parse(notas) : [], cuentas: cuentas ? JSON.parse(cuentas) : [] };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "backup_vanessa.json");
+        document.body.appendChild(downloadAnchorNode); 
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+        
+        if(navigator.vibrate) navigator.vibrate(100); 
+        document.getElementById('backupModal').classList.remove('show');
+    }
+
+    // CARGAR DATOS
+    function cargarRespaldo(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (data.notas) localStorage.setItem('vane_notas', JSON.stringify(data.notas));
+                if (data.cuentas) localStorage.setItem('vane_cuentas', JSON.stringify(data.cuentas));
+                alert('¡Datos cargados correctamente! 🌸');
+                document.getElementById('backupModal').classList.remove('show');
+            } catch (error) {
+                alert('Error al leer el archivo. Asegúrate de que sea el archivo correcto.');
+            }
+            event.target.value = ''; // Resetea el input para poder cargar el mismo archivo si es necesario
+        };
+        reader.readAsText(file);
+    }
+
+    function updateClock() {
+        const now = new Date();
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        let dateStr = now.toLocaleDateString('es-ES', options);
+        dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        
+        let h = now.getHours();
+        let m = now.getMinutes();
+        let s = now.getSeconds();
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        
+        const timeStr = `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} ${ampm}`;
+        document.getElementById('liveClock').innerText = `${dateStr} | ${timeStr}`;
+    }
+
+    function setDay(idx) {
+        currentDayIdx = idx;
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        const btn = document.getElementById(`btn-${idx}`);
+        if(btn) btn.classList.add('active');
+        
+        renderGrid('grid-yo', dbYo[idx]);
+        renderGrid('grid-genaro', dbGenaro[idx]);
+        updateUI(); 
+    }
+
+    function formatTime12h(h) {
+        const hour = Math.floor(h);
+        const min = Math.round((h % 1) * 60);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const h12 = hour % 12 || 12;
+        return `${h12}:${min.toString().padStart(2, '0')} ${ampm}`;
+    }
+
+    function formatTimeLeft(totalMinutes) {
+        if (totalMinutes <= 0) return "¡Ahora!";
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+        return h > 0 ? `${h}h ${m}m` : `${m} min`;
+    }
+
+    function renderGrid(containerId, classes) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        
+        // Si no hay clases (como el sábado de Vanessa o los domingos), simplemente no se renderiza nada
+        if(!classes || classes.length === 0) {
+            return;
+        }
+        
+        classes.forEach(cls => {
+            container.innerHTML += `
+                <div class="class-card ${cls.c}" data-start="${cls.s}"> 
+                    <span class="cc-name">${cls.n}</span>
+                    <span class="cc-time"><i class="fa-regular fa-clock"></i> ${formatTime12h(cls.s)} - ${formatTime12h(cls.s+cls.d)}</span>
+                </div>
+            `;
+        });
+    }
+
+    function updateUI() {
+        const now = new Date();
+        const day = now.getDay() === 0 ? 0 : now.getDay();
+        const curTime = now.getHours() + (now.getMinutes() / 60);
+
+        // Limpiar tarjetas activas
+        document.querySelectorAll('.class-card').forEach(c => {
+            c.classList.remove('active-class');
+            const ind = c.querySelector('.current-indicator');
+            if (ind) ind.remove();
+        });
+
+        // ACTUALIZAR WIDGET DE ESTADO (SOLO PARA VANESSA)
+        const classEl = document.getElementById('currentClass');
+        const timeEl = document.getElementById('timeLeft');
+        const nextEl = document.getElementById('nextClass');
+        const labelEl = document.getElementById('statusLabel');
+        const barEl = document.getElementById('progressBar');
+        const iconEl = document.getElementById('statusIcon');
+
+        if (day === 0) {
+            labelEl.innerText = "ESTADO";
+            classEl.innerText = "¡Domingo Libre! 🌸";
+            timeEl.innerText = "Día libre";
+            nextEl.innerText = "Nos vemos el Lunes";
+            barEl.style.width = "0%";
+            iconEl.className = "fa-solid fa-cake-candles";
+        } else {
+            const todayYo = dbYo[day] || [];
+            if (todayYo.length === 0) {
+                // Sábado o día libre
+                labelEl.innerText = "ESTADO";
+                classEl.innerText = "¡Día libre! 🍓";
+                timeEl.innerText = "A descansar";
+                barEl.style.width = "0%";
+                iconEl.className = "fa-solid fa-house-user";
+                nextEl.innerText = "Próximo: Lunes 7:00 AM";
+            } else {
+                const current = todayYo.find(c => curTime >= c.s && curTime < (c.s + c.d));
+                const upcoming = todayYo.filter(c => c.s > curTime).sort((a,b) => a.s - b.s);
+
+                if (current) {
+                    labelEl.innerText = "EN CURSO";
+                    classEl.innerText = current.n;
+                    iconEl.className = current.i; 
+                    
+                    const totalMin = current.d * 60;
+                    const elapsedMin = (curTime - current.s) * 60;
+                    const remain = Math.round(totalMin - elapsedMin);
+                    
+                    timeEl.innerText = `Termina en ${formatTimeLeft(remain)}`;
+                    barEl.style.width = `${Math.min(100, (elapsedMin / totalMin) * 100)}%`;
+
+                    if (upcoming.length > 0) {
+                        const next = upcoming[0];
+                        const minToNext = Math.round((next.s - curTime) * 60);
+                        nextEl.innerText = `Sig: ${next.n} (en ${formatTimeLeft(minToNext)})`;
+                    } else {
+                        nextEl.innerText = "Último turno del día";
+                    }
+
+                    // Poner el indicador si está viendo el día actual
+                    let activeBtn = document.querySelector('.day-btn.active');
+                    let viewDay = activeBtn ? parseInt(activeBtn.id.split('-')[1]) : 1;
+                    if (day === viewDay) {
+                        let activeCard = document.querySelector(`#grid-yo .class-card[data-start="${current.s}"]`);
+                        if (activeCard) {
+                            activeCard.classList.add('active-class');
+                            const badge = document.createElement('div');
+                            badge.className = 'current-indicator';
+                            badge.innerHTML = '¡AHORA!';
+                            activeCard.appendChild(badge);
+                        }
+                    }
+                } else if (upcoming.length > 0) {
+                    const next = upcoming[0];
+                    labelEl.innerText = "PRÓXIMO TURNO";
+                    classEl.innerText = next.n;
+                    iconEl.className = next.i || "fa-solid fa-clock";
+                    
+                    const remainToStart = Math.round((next.s - curTime) * 60);
+                    timeEl.innerText = `Empieza en ${formatTimeLeft(remainToStart)}`;
+                    barEl.style.width = "0%";
+                    nextEl.innerText = `Horario: ${formatTime12h(next.s)}`;
+                } else {
+                    labelEl.innerText = "ESTADO";
+                    classEl.innerText = "Día terminado 🌙";
+                    iconEl.className = "fa-solid fa-house-user";
+                    timeEl.innerText = "¡A descansar!";
+                    barEl.style.width = "0%";
+                    
+                    const nextDay = (day >= 5) ? 1 : day + 1;
+                    const nextDayClass = dbYo[nextDay] && dbYo[nextDay].length > 0 ? dbYo[nextDay][0] : null;
+                    if (nextDayClass) {
+                        const dayName = (day >= 5) ? "Lunes" : "Mañana";
+                        nextEl.innerText = `Próxima: ${dayName} a las ${formatTime12h(nextDayClass.s)}`;
+                    }
+                }
+            }
+        }
+
+        // ACTUALIZAR TARJETAS DE GENARO (Solo el brinquito visual)
+        if (day !== 0 && dbGenaro[day]) {
+            const currentGenaro = dbGenaro[day].find(c => curTime >= c.s && curTime < (c.s + c.d));
+            if (currentGenaro) {
+                let activeBtn = document.querySelector('.day-btn.active');
+                let viewDay = activeBtn ? parseInt(activeBtn.id.split('-')[1]) : 1;
+                if (day === viewDay) {
+                    let activeCard = document.querySelector(`#grid-genaro .class-card[data-start="${currentGenaro.s}"]`);
+                    if (activeCard) {
+                        activeCard.classList.add('active-class');
+                        const badge = document.createElement('div');
+                        badge.className = 'current-indicator';
+                        badge.innerHTML = '¡AHORA!';
+                        activeCard.appendChild(badge);
+                    }
+                }
+            }
+        }
+    }
+
+    function createRain() {
+        const items = ['🍓', '🌸'];
+        for(let i=0; i<25; i++) {
+            setTimeout(() => {
+                const drop = document.createElement('div');
+                drop.classList.add('falling-item');
+                drop.innerText = items[Math.floor(Math.random() * items.length)];
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                document.body.appendChild(drop);
+                setTimeout(() => { drop.remove(); }, 5000);
+            }, i * 150);
+        }
+    }
+
+    // REGISTRO DEL SERVICE WORKER
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.error('Error al registrar SW', err));
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Notas 🍓</title>
+    
+    <link rel="icon" type="image/png" href="iconopag.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-strong-pink: #FFB6C1; 
+            --bg-white: #FFFFFF;
+            --c-red: #FF3366; 
+            --c-pink: #FF6688; 
+            --text-main: #4A4A4A; 
+            --text-light: #FFFFFF;
+            --kawaii-shadow: 4px 4px 0px var(--c-pink);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Varela Round', sans-serif; }
+
+        body { 
+            background: var(--bg-strong-pink); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            background-image: radial-gradient(rgba(255,255,255,0.7) 3px, transparent 3px);
+            background-size: 24px 24px;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .mobile-container {
+            width: 100%; max-width: 500px; margin: 0 auto;
+            padding: calc(env(safe-area-inset-top, 20px) + 20px) 25px 40px 25px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* HEADER */
+        .header-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .back-btn { 
+            background: var(--bg-white); color: var(--c-red); 
+            width: 45px; height: 45px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            text-decoration: none; font-size: 1.2rem;
+            border: 3px solid var(--c-red); box-shadow: 2px 2px 0px var(--c-pink);
+            transition: 0.2s ease;
+        }
+        .back-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 transparent; }
+        .page-title { font-size: 1.6rem; font-weight: 800; color: var(--c-red); text-shadow: 2px 2px 0px var(--bg-white); }
+        .spacer { width: 45px; }
+
+        /* BUSCADOR */
+        .search-box {
+            position: relative; margin-bottom: 15px;
+        }
+        .search-box i {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            color: var(--c-pink); font-size: 1.1rem;
+        }
+        .search-input {
+            width: 100%; background: var(--bg-white); border: 3px solid var(--bg-white);
+            border-radius: 20px; padding: 12px 15px 12px 40px; font-size: 0.95rem;
+            color: var(--text-main); outline: none; box-shadow: 2px 2px 0px var(--c-pink);
+            transition: 0.2s ease; font-weight: 600;
+        }
+        .search-input:focus { border-color: var(--c-red); }
+
+        /* BOTÓN NUEVA NOTA PRINCIPAL */
+        .main-add-btn {
+            width: 100%; background: var(--c-red); color: var(--bg-white);
+            border: 3px solid var(--bg-white); border-radius: 20px;
+            padding: 15px; font-size: 1.05rem; font-weight: 800;
+            box-shadow: 3px 3px 0px var(--c-pink); cursor: pointer;
+            transition: 0.2s ease; display: flex; justify-content: center; align-items: center; gap: 10px;
+            margin-bottom: 25px;
+        }
+        .main-add-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 transparent; }
+
+        /* LISTA DE NOTAS */
+        .notes-container { display: flex; flex-direction: column; gap: 22px; padding-bottom: 20px;}
+        
+        .empty-state { text-align: center; color: var(--text-main); font-weight: 700; margin-top: 20px; opacity: 0.8; }
+        .empty-state i { font-size: 2.5rem; color: var(--c-pink); margin-bottom: 10px; }
+
+        .note-card {
+            border-radius: 20px; padding: 15px 20px; 
+            border: 3px solid var(--c-pink);
+            box-shadow: var(--kawaii-shadow);
+            position: relative;
+            animation: popIn 0.3s ease forwards;
+        }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .note-card.c1 { background: #FFE5EC; }
+        .note-card.c2 { background: #E6F2FF; }
+        .note-card.c3 { background: #FFF8DC; }
+        .note-card.c4 { background: #E6FFE6; }
+        .note-card.c5 { background: #F0E6FF; }
+
+        .note-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .note-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); padding-right: 15px;}
+        .note-date { font-size: 0.7rem; color: var(--text-main); font-weight: 800; background: rgba(255,255,255,0.6); padding: 4px 8px; border-radius: 12px; }
+        .note-content { font-size: 0.95rem; line-height: 1.5; color: var(--text-main); white-space: pre-wrap; font-weight: 600; }
+        
+        .card-actions {
+            position: absolute; bottom: -15px; right: 15px;
+            display: flex; gap: 8px;
+        }
+        .action-icon {
+            width: 40px; height: 40px; background: var(--bg-white);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 1rem; cursor: pointer; transition: 0.2s ease;
+        }
+        .action-icon.btn-edit { border: 3px solid #FF8C00; color: #FF8C00; box-shadow: 2px 2px 0px #FFA500; }
+        .action-icon.btn-delete { border: 3px solid var(--c-red); color: var(--c-red); box-shadow: 2px 2px 0px var(--c-pink); }
+        .action-icon:active { transform: translate(2px, 2px); box-shadow: 0 0 0 transparent; }
+
+        /* TOAST Y MODALES */
+        .custom-toast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--bg-white); color: var(--c-red);
+            border: 3px solid var(--c-red); border-radius: 20px;
+            padding: 12px 25px; font-weight: 800; font-size: 0.95rem;
+            box-shadow: 4px 4px 0px var(--c-pink);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999; display: flex; align-items: center; gap: 10px;
+        }
+        .custom-toast.show { top: calc(env(safe-area-inset-top, 20px) + 20px); }
+
+        .custom-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 182, 193, 0.8); backdrop-filter: blur(5px);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s ease; padding: 20px;
+        }
+        .custom-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        
+        .custom-modal-box {
+            background: var(--bg-white); padding: 30px 25px; border-radius: 30px;
+            text-align: center; border: 4px solid var(--c-red);
+            box-shadow: 6px 6px 0px var(--c-pink); position: relative; 
+            max-width: 320px; width: 100%; transform: scale(0.8); 
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .custom-modal-overlay.show .custom-modal-box { transform: scale(1); }
+        
+        .custom-modal-icon { font-size: 2.5rem; margin-bottom: 10px; color: var(--c-red); }
+        .custom-modal-title { color: var(--c-red); font-size: 1.4rem; font-weight: 800; margin-bottom: 20px; }
+        
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px;}
+        .modal-btn {
+            flex: 1; padding: 12px; border-radius: 20px; font-weight: 800; font-size: 0.95rem;
+            cursor: pointer; transition: 0.2s ease; border: 3px solid transparent;
+            display: flex; justify-content: center; align-items: center; gap: 5px;
+        }
+        .modal-btn-cancel { background: var(--bg-white); color: var(--text-main); border-color: #ccc; }
+        .modal-btn-action { background: var(--c-red); color: var(--bg-white); border-color: var(--bg-white); box-shadow: 2px 2px 0px var(--c-pink); }
+        .modal-btn-edit { background: #FF8C00; box-shadow: 2px 2px 0px #FFA500; }
+        .modal-btn:active { transform: scale(0.95); }
+
+        /* Inputs para el Modal de Crear/Editar */
+        .input-group { margin-bottom: 12px; position: relative; }
+        .cute-input, .cute-textarea {
+            width: 100%; background: #FFF0F5; border: 2px solid var(--c-pink);
+            border-radius: 15px; padding: 12px 15px; font-size: 0.95rem;
+            color: var(--text-main); outline: none; transition: 0.2s ease;
+        }
+        .cute-input:focus, .cute-textarea:focus { border-color: var(--c-red); background: var(--bg-white); }
+        .cute-textarea { resize: none; min-height: 80px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <div class="header-nav">
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h1 class="page-title">Mis Notas 🌸</h1>
+            <div class="spacer"></div>
+        </div>
+
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar una nota..." onkeyup="filterNotes()">
+        </div>
+
+        <button class="main-add-btn" onclick="openCreatorModal()">
+            <i class="fa-solid fa-plus"></i> Nueva Nota
+        </button>
+
+        <div class="notes-container" id="notesList">
+            </div>
+    </div>
+
+    <div class="custom-toast" id="appToast">
+        <i class="fa-solid fa-circle-exclamation" id="toastIcon"></i>
+        <span id="toastMsg">Mensaje aquí</span>
+    </div>
+
+    <div class="custom-modal-overlay" id="creatorModal">
+        <div class="custom-modal-box">
+            <div class="custom-modal-icon" id="creatorModalIcon">📝</div>
+            <div class="custom-modal-title" id="creatorModalTitle">Nueva Nota</div>
+            
+            <div class="input-group">
+                <input type="text" id="noteTitle" class="cute-input" placeholder="Título de la nota (opcional) ✨">
+            </div>
+            <div class="input-group">
+                <textarea id="noteContent" class="cute-textarea" placeholder="Escribe algo importante o lindo aquí... 🍓"></textarea>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeCreatorModal()">Cancelar</button>
+                <button class="modal-btn modal-btn-action" id="saveBtn" onclick="saveNote()"><i class="fa-solid fa-check"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-modal-overlay" id="confirmModal">
+        <div class="custom-modal-box">
+            <div class="custom-modal-icon">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <div class="custom-modal-text" style="color: var(--text-main); font-weight: 800; margin-bottom: 20px;">¿Segura que quieres borrar esta nota?</div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeConfirmModal()">Cancelar</button>
+                <button class="modal-btn modal-btn-action" id="confirmDeleteBtn">Sí, borrar</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const bgClasses = ['c1', 'c2', 'c3', 'c4', 'c5'];
+    let editingNoteId = null; 
+    let noteIdToDelete = null;
+
+    document.addEventListener('DOMContentLoaded', loadNotes);
+
+    // --- FUNCIONES DE UI ---
+    function showToast(message, iconClass = 'fa-solid fa-circle-exclamation') {
+        const toast = document.getElementById('appToast');
+        document.getElementById('toastMsg').innerText = message;
+        document.getElementById('toastIcon').className = iconClass;
+        
+        toast.classList.add('show');
+        if(navigator.vibrate) navigator.vibrate([20, 40, 20]);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // Modal de Creación / Edición
+    function openCreatorModal() {
+        editingNoteId = null;
+        document.getElementById('noteTitle').value = '';
+        document.getElementById('noteContent').value = '';
+        
+        document.getElementById('creatorModalTitle').innerText = 'Nueva Nota';
+        document.getElementById('creatorModalIcon').innerText = '📝';
+        
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar';
+        saveBtn.classList.remove('modal-btn-edit');
+
+        document.getElementById('creatorModal').classList.add('show');
+        if(navigator.vibrate) navigator.vibrate(40);
+    }
+
+    function closeCreatorModal() {
+        editingNoteId = null;
+        document.getElementById('creatorModal').classList.remove('show');
+    }
+
+    // Modal de Borrado
+    function openConfirmModal(id) {
+        noteIdToDelete = id;
+        document.getElementById('confirmModal').classList.add('show');
+        if(navigator.vibrate) navigator.vibrate(40);
+    }
+
+    function closeConfirmModal() {
+        noteIdToDelete = null;
+        document.getElementById('confirmModal').classList.remove('show');
+    }
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+        if (noteIdToDelete !== null) {
+            executeDeleteNote(noteIdToDelete);
+            closeConfirmModal();
+        }
+    });
+    // -----------------------
+
+    function saveNote() {
+        const titleInput = document.getElementById('noteTitle');
+        const contentInput = document.getElementById('noteContent');
+        
+        const title = titleInput.value.trim() || 'Nota 🌸';
+        const content = contentInput.value.trim();
+
+        if (content === '') {
+            showToast('¡Escribe algo en la nota primero! 🍓'); 
+            return;
+        }
+
+        let notes = JSON.parse(localStorage.getItem('vane_notas')) || [];
+
+        if (editingNoteId) {
+            const noteIndex = notes.findIndex(n => n.id === editingNoteId);
+            if (noteIndex !== -1) {
+                notes[noteIndex].title = title;
+                notes[noteIndex].content = content;
+                const editTag = ' (Editado)';
+                let newDate = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+                notes[noteIndex].date = newDate + editTag;
+            }
+        } else {
+            const newNote = {
+                id: Date.now(),
+                title: title,
+                content: content,
+                date: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+                colorClass: bgClasses[Math.floor(Math.random() * bgClasses.length)]
+            };
+            notes.unshift(newNote); 
+        }
+        
+        localStorage.setItem('vane_notas', JSON.stringify(notes));
+        
+        closeCreatorModal();
+        loadNotes();
+        filterNotes(); 
+        
+        if(navigator.vibrate) navigator.vibrate([30, 50, 30]);
+    }
+
+    function loadNotes() {
+        const container = document.getElementById('notesList');
+        let notes = JSON.parse(localStorage.getItem('vane_notas')) || [];
+        
+        container.innerHTML = '';
+
+        if (notes.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-face-smile-wink"></i>
+                    <p>Aún no tienes notas.<br>¡Escribe la primera!</p>
+                </div>
+            `;
+            return;
+        }
+
+        notes.forEach(note => {
+            const noteEl = document.createElement('div');
+            noteEl.className = `note-card ${note.colorClass}`;
+            noteEl.dataset.title = note.title.toLowerCase();
+            noteEl.dataset.content = note.content.toLowerCase();
+            
+            noteEl.innerHTML = `
+                <div class="note-header">
+                    <div class="note-title">${note.title}</div>
+                    <div class="note-date">${note.date}</div>
+                </div>
+                <div class="note-content">${note.content}</div>
+                <div class="card-actions">
+                    <button class="action-icon btn-edit" onclick="startEdit(${note.id})" title="Editar">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="action-icon btn-delete" onclick="openConfirmModal(${note.id})" title="Borrar">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(noteEl);
+        });
+    }
+
+    function startEdit(id) {
+        let notes = JSON.parse(localStorage.getItem('vane_notas')) || [];
+        const noteToEdit = notes.find(n => n.id === id);
+        
+        if(noteToEdit) {
+            editingNoteId = id;
+            document.getElementById('noteTitle').value = noteToEdit.title === 'Nota 🌸' ? '' : noteToEdit.title;
+            document.getElementById('noteContent').value = noteToEdit.content;
+            
+            document.getElementById('creatorModalTitle').innerText = 'Editar Nota';
+            document.getElementById('creatorModalIcon').innerText = '✏️';
+            
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Actualizar';
+            saveBtn.classList.add('modal-btn-edit'); 
+            
+            document.getElementById('creatorModal').classList.add('show');
+            if(navigator.vibrate) navigator.vibrate(40);
+        }
+    }
+
+    function executeDeleteNote(id) {
+        let notes = JSON.parse(localStorage.getItem('vane_notas')) || [];
+        notes = notes.filter(note => note.id !== id);
+        localStorage.setItem('vane_notas', JSON.stringify(notes));
+        
+        loadNotes();
+        filterNotes(); 
+    }
+
+    function filterNotes() {
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.note-card');
+        
+        cards.forEach(card => {
+            const title = card.dataset.title;
+            const content = card.dataset.content;
+            
+            if (title.includes(searchText) || content.includes(searchText)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // --- REGISTRO DEL SERVICE WORKER (Actualización Automática) ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload(); 
+                        }
+                    };
+                };
+            });
+            let refreshing;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                refreshing = true;
+                window.location.reload();
+            });
+        });
+    }
+</script>
+</body>
+</html>

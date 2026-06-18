@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vane-app-v5'; // Subimos la versión para forzar la limpieza
+const CACHE_NAME = 'vane-app-v1.1; // Subimos la versión para forzar la limpieza
 
 const urlsToCache = [
   './',

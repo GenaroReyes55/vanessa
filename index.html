@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Horario 🌸</title>
+    <title>Horario 💖</title>
     
     <link rel="icon" type="image/png" href="iconopag.png">
     <link rel="apple-touch-icon" href="iconopag.png">
@@ -115,7 +115,7 @@
             display: block; width: fit-content; margin: 0 auto;
         }
 
-        /* WIDGET ORIGINAL DE ESTADO (SOLO PARA VANESSA) */
+        /* WIDGET ORIGINAL DE ESTADO */
         .schedule-widget {
             background: var(--bg-white);
             border: 4px solid var(--c-red);
@@ -148,7 +148,7 @@
         .sw-detail { font-size: 0.8rem; font-weight: 800; color: var(--c-red); }
         .sw-next { font-size: 0.75rem; color: var(--text-main); font-weight: 700; text-align: right; max-width: 60%; line-height: 1.2; }
 
-        /* SELECTOR DÍAS (COMO ESTABA ANTES) */
+        /* SELECTOR DÍAS (Sin Sábado) */
         .day-selector { display: flex; gap: 6px; margin-bottom: 25px; }
         .day-btn { 
             flex: 1; text-align: center; padding: 12px 0; font-size: 0.75rem; font-weight: 800; 
@@ -162,39 +162,110 @@
             box-shadow: 0px 0px 0px var(--c-pink); transform: translate(2px, 2px); 
         }
 
-        /* DOS COLUMNAS DE HORARIO */
-        .columns-wrapper { display: flex; gap: 15px; width: 100%; }
-        .col { flex: 1; min-width: 0; }
-        .col-title { text-align: center; color: var(--c-red); font-size: 1.3rem; font-weight: 900; margin-bottom: 12px; text-shadow: 1px 1px 0px var(--bg-white); }
-
-        /* GRID Y CLASES */
-        .schedule-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
-        .class-card {
-            border-radius: 18px; padding: 12px 10px; 
-            display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;
-            border: 3px solid var(--c-pink); box-shadow: var(--kawaii-shadow);
-            position: relative; transition: all 0.2s ease;
+        /* TABLERO DE HORARIOS PROPORCIONAL */
+        .schedule-board {
+            background: var(--bg-white);
+            border: 4px solid var(--c-pink);
+            border-radius: 20px;
+            box-shadow: var(--kawaii-shadow);
+            padding: 15px 10px;
+            margin-bottom: 30px;
         }
-        .cc-name { font-size: 0.9rem; font-weight: 800; color: var(--text-main); line-height: 1.1; }
+        .board-header {
+            display: flex;
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--c-red);
+            padding-bottom: 10px;
+        }
+        .col-head {
+            flex: 1;
+            text-align: center;
+            font-weight: 900;
+            color: var(--c-red);
+            font-size: 1.1rem;
+        }
+        .time-head {
+            width: 50px;
+            flex: none;
+            text-align: right;
+            padding-right: 5px;
+        }
+        .board-body {
+            position: relative;
+            display: flex;
+            height: 560px; /* 7 horas (14:00 a 21:00) * 80px */
+            margin-top: 5px;
+        }
+        .grid-lines {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .grid-line {
+            height: 80px;
+            border-top: 2px dashed #FFE5EC;
+            box-sizing: border-box;
+        }
+        .schedule-col {
+            flex: 1;
+            position: relative;
+            z-index: 2;
+            margin-right: 8px;
+        }
+        .timeline-col {
+            width: 50px;
+            flex: none;
+            position: relative;
+            z-index: 2;
+            border-left: 2px solid var(--c-pink);
+        }
+        .time-label {
+            height: 80px;
+            position: relative;
+        }
+        .time-label span {
+            position: absolute;
+            top: -8px;
+            left: 5px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--c-red);
+        }
+
+        /* TARJETAS DE MATERIAS */
+        .class-card {
+            border-radius: 12px; 
+            padding: 4px 6px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 3px;
+            border: 3px solid var(--c-pink); box-shadow: 2px 2px 0px var(--c-pink);
+            position: absolute; width: 100%; left: 0;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+        .cc-name { font-size: 0.75rem; font-weight: 800; color: var(--text-main); line-height: 1.1; }
         .cc-time { 
-            font-size: 0.75rem; font-weight: 700; color: var(--text-main);
-            padding: 4px 10px; border-radius: 12px; display: inline-block; width: fit-content;
+            font-size: 0.65rem; font-weight: 700; color: var(--text-main);
+            background: rgba(255,255,255,0.6);
+            padding: 2px 6px; border-radius: 8px; display: inline-block;
         }
 
         /* COLORES MATERIAS */
-        .bg-trabajo { background: #E6F2FF; } .bg-trabajo .cc-time { background: #B3D9FF; } 
-        .bg-clase { background: #FFF8DC; }   .bg-clase .cc-time { background: #FFE499; } 
+        .bg-1 { background: #E6F2FF; } .bg-1 .cc-time { background: #B3D9FF; }
+        .bg-2 { background: #FFF8DC; } .bg-2 .cc-time { background: #FFE499; }
+        .bg-3 { background: #FFE5EC; } .bg-3 .cc-time { background: #FFC0D3; }
+        .bg-4 { background: #E8F5E9; } .bg-4 .cc-time { background: #A5D6A7; }
 
         @keyframes kawaii-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
         .class-card.active-class {
-            border-color: var(--c-red); background: var(--bg-white);
+            border-color: var(--c-red); 
             animation: kawaii-bounce 2s infinite; z-index: 10;
         }
         .current-indicator {
-            position: absolute; top: -12px; right: 50%; transform: translateX(50%);
+            position: absolute; top: -10px; right: 50%; transform: translateX(50%);
             background: var(--c-red); color: var(--bg-white);
-            font-size: 0.65rem; font-weight: 800; padding: 4px 12px;
-            border-radius: 12px; letter-spacing: 1px; border: 2px solid var(--bg-white);
+            font-size: 0.6rem; font-weight: 800; padding: 2px 8px;
+            border-radius: 10px; letter-spacing: 0.5px; border: 2px solid var(--bg-white);
             box-shadow: 2px 2px 0px var(--c-pink); z-index: 11; white-space: nowrap;
         }
 
@@ -245,7 +316,6 @@
     </style>
 </head>
 <body id="mainBody">
-
     <div class="mobile-container">
         
         <div class="nav-buttons">
@@ -284,35 +354,36 @@
             </div>
         </div>
 
-        <!-- SELECTOR DE DÍAS COMO ESTABA ANTES -->
+        <!-- SELECTOR DE DÍAS (Sin Sábado) -->
         <div class="day-selector">
             <div class="day-btn" onclick="setDay(1)" id="btn-1">Lun</div>
             <div class="day-btn" onclick="setDay(2)" id="btn-2">Mar</div>
             <div class="day-btn" onclick="setDay(3)" id="btn-3">Mié</div>
             <div class="day-btn" onclick="setDay(4)" id="btn-4">Jue</div>
             <div class="day-btn" onclick="setDay(5)" id="btn-5">Vie</div>
-            <div class="day-btn" onclick="setDay(6)" id="btn-6">Sáb</div>
         </div>
 
-        <!-- COLUMNAS DE HORARIO -->
-        <div class="columns-wrapper">
-            <div class="col">
-                <h2 class="col-title">Yo</h2>
-                <div class="schedule-grid" id="grid-yo"></div>
+        <!-- TABLERO DE HORARIOS PROPORCIONAL -->
+        <div class="schedule-board">
+            <div class="board-header">
+                <div class="col-head">Vane</div>
+                <div class="col-head">Genaro</div>
+                <div class="col-head time-head">Hora</div>
             </div>
-            <div class="col">
-                <h2 class="col-title">Genaro</h2>
-                <div class="schedule-grid" id="grid-genaro"></div>
+            <div class="board-body" id="boardBody">
+                <div class="grid-lines" id="gridLines"></div>
+                <div class="schedule-col" id="grid-vane"></div>
+                <div class="schedule-col" id="grid-genaro"></div>
+                <div class="timeline-col" id="timeline"></div>
             </div>
         </div>
-
     </div>
 
     <!-- MODAL SECRETO (FOTO) -->
     <div class="secret-modal" id="secretModal">
         <div class="secret-content">
             <div class="close-secret" onclick="document.getElementById('secretModal').classList.remove('show')">&times;</div>
-            <h3>💌 Para ti...</h3>
+            <h3>✨ Para ti...</h3>
             <p id="secretMessageText">Cargando mensaje...</p>
         </div>
     </div>
@@ -321,7 +392,7 @@
     <div class="secret-modal" id="backupModal">
         <div class="secret-content">
             <div class="close-secret" onclick="document.getElementById('backupModal').classList.remove('show')">&times;</div>
-            <h3>💾 Respaldo</h3>
+            <h3>☁️ Respaldo</h3>
             <p style="margin-bottom: 20px; font-size: 0.95rem;">Guarda o recupera tus notas y contraseñas.</p>
             
             <button class="backup-btn" onclick="descargarRespaldo()">
@@ -336,67 +407,126 @@
     </div>
 
 <script>
-    // BASE DE DATOS VANESSA (Tu Widget usa solo esta info)
-    const dbYo = {
-        1: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        2: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        3: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        4: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        5: [ {s:7, d:9, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        6: [] // Sábado libre (No aparecerá ninguna tarjeta)
+    const startHour = 14; 
+    const hourHeight = 80; 
+
+    // BASE DE DATOS VANESSA (Widget usa esta info también)
+    const dbVane = {
+        1: [
+            {s: 14, d: 2, n: "Inv. Operac.", c: "bg-3", i: "fa-solid fa-chart-line"},
+            {s: 16, d: 1, n: "Instrum. Pres.", c: "bg-1", i: "fa-solid fa-pen"},
+            {s: 17, d: 1, n: "Entorno Macro.", c: "bg-4", i: "fa-solid fa-globe"},
+            {s: 18, d: 2, n: "Estad. Infer. I", c: "bg-2", i: "fa-solid fa-chart-bar"},
+            {s: 20, d: 1, n: "Emp. e Innov.", c: "bg-3", i: "fa-solid fa-lightbulb"}
+        ],
+        2: [
+            {s: 14, d: 2, n: "Hab Directivas", c: "bg-4", i: "fa-solid fa-users"},
+            {s: 16, d: 1, n: "Estad. Infer. I", c: "bg-2", i: "fa-solid fa-chart-bar"},
+            {s: 17, d: 1, n: "Instrum. Pres.", c: "bg-1", i: "fa-solid fa-pen"},
+            {s: 18, d: 2, n: "Ing Económica", c: "bg-1", i: "fa-solid fa-money-bill"},
+            {s: 20, d: 1, n: "Entorno Macro.", c: "bg-4", i: "fa-solid fa-globe"}
+        ],
+        3: [
+            {s: 14, d: 2, n: "Inv. Operac.", c: "bg-3", i: "fa-solid fa-chart-line"},
+            {s: 16, d: 2, n: "Instrum. Pres.", c: "bg-1", i: "fa-solid fa-pen"},
+            {s: 18, d: 1, n: "Estad. Infer. I", c: "bg-2", i: "fa-solid fa-chart-bar"},
+            {s: 19, d: 1, n: "Entorno Macro.", c: "bg-4", i: "fa-solid fa-globe"},
+            {s: 20, d: 1, n: "Emp. e Innov.", c: "bg-3", i: "fa-solid fa-lightbulb"}
+        ],
+        4: [
+            {s: 14, d: 2, n: "Hab Directivas", c: "bg-4", i: "fa-solid fa-users"},
+            {s: 16, d: 1, n: "Instrum. Pres.", c: "bg-1", i: "fa-solid fa-pen"},
+            {s: 17, d: 1, n: "Entorno Macro.", c: "bg-4", i: "fa-solid fa-globe"},
+            {s: 18, d: 2, n: "Ing Económica", c: "bg-1", i: "fa-solid fa-money-bill"},
+            {s: 20, d: 1, n: "Emp. e Innov.", c: "bg-3", i: "fa-solid fa-lightbulb"}
+        ],
+        5: [
+            {s: 14, d: 1, n: "Entorno Macro.", c: "bg-4", i: "fa-solid fa-globe"},
+            {s: 15, d: 1, n: "Inv. Operac.", c: "bg-3", i: "fa-solid fa-chart-line"},
+            {s: 16, d: 1, n: "Ing Económica", c: "bg-1", i: "fa-solid fa-money-bill"},
+            {s: 17, d: 2, n: "Estad. Infer. I", c: "bg-2", i: "fa-solid fa-chart-bar"},
+            {s: 19, d: 2, n: "Emp. e Innov.", c: "bg-3", i: "fa-solid fa-lightbulb"}
+        ]
     };
 
     // BASE DE DATOS GENARO
     const dbGenaro = {
-        1: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        2: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        3: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        4: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        5: [ {s:8, d:2.5, n:"Clase", c:"bg-clase", i:"fa-solid fa-book"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ],
-        6: [ {s:7.5, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"}, {s:16, d:6, n:"Trabajo", c:"bg-trabajo", i:"fa-solid fa-briefcase"} ]
+        1: [
+            {s: 14, d: 2, n: "Contab Financ.", c: "bg-1", i: "fa-solid fa-calculator"},
+            {s: 19, d: 2, n: "Est. Datos", c: "bg-2", i: "fa-solid fa-database"}
+        ],
+        2: [
+            {s: 14, d: 2, n: "Inv. Operac.", c: "bg-3", i: "fa-solid fa-chart-line"},
+            {s: 17, d: 1, n: "Prob. y Estad.", c: "bg-4", i: "fa-solid fa-chart-pie"},
+            {s: 20, d: 1, n: "Est. Datos", c: "bg-2", i: "fa-solid fa-database"}
+        ],
+        3: [
+            {s: 14, d: 2, n: "Contab Financ.", c: "bg-1", i: "fa-solid fa-calculator"},
+            {s: 17, d: 2, n: "Prob. y Estad.", c: "bg-4", i: "fa-solid fa-chart-pie"},
+            {s: 19, d: 2, n: "Est. Datos", c: "bg-2", i: "fa-solid fa-database"}
+        ],
+        4: [
+            {s: 14, d: 2, n: "Inv. Operac.", c: "bg-3", i: "fa-solid fa-chart-line"},
+            {s: 17, d: 1, n: "Prob. y Estad.", c: "bg-4", i: "fa-solid fa-chart-pie"}
+        ],
+        5: [
+            {s: 18, d: 1, n: "Prob. y Estad.", c: "bg-4", i: "fa-solid fa-chart-pie"}
+        ]
     };
 
     const mensajesBonitos = [
-        "Eres la niña de mis ojos ❤️",
-        "Te amo más de lo que las palabras pueden expresar ✨",
-        "Cada día me enamoro más de ti 🌸",
-        "Eres mi lugar favorito en el mundo 🍓",
-        "Gracias por hacerme siempre feliz 💕",
-        "Mi vida es mucho más bonita desde que estás en ella 💖",
-        "te amo muchisimo 👑",
+        "Eres la niña de mis ojos 💖",
+        "Te amo más de lo que las palabras pueden expresar 🥰",
+        "Cada día me enamoro más de ti ✨",
+        "Eres mi lugar favorito en el mundo 🌍",
+        "Gracias por hacerme siempre feliz 😊",
+        "Mi vida es mucho más bonita desde que estás en ella 🌸",
+        "te amo muchisimo ❤️",
         "Siempre pienso en ti, incluso cuando estoy distraído 💭",
-        "Te amo mi corazón de melón 💘",
-        "Eres mi casualidad más hermosa 🌟",
+        "Te amo mi corazón de melón 🍈",
+        "Eres mi casualidad más hermosa 🦋",
         "Qué suerte tengo de tenerte a mi lado 🍀",
-        "Eres el amor de mi vida 💍",
+        "Eres el amor de mi vida 💕",
         "No hay nadie en el universo como tú 🌌",
-        "Amo tu sonrisa ☀️",
+        "Amo tu sonrisa 😍",
         "Me haces querer ser una mejor persona cada día 🌱",
         "Contigo el tiempo se detiene ⏳",
         "Eres mi sueño hecho realidad 🌙",
         "Abrazarte es mi terapia favorita 🫂",
         "Te amo de aquí a la luna... a pasitos de tortuga 🐢",
-        "Eres la niña más bonita 💓",
-        "Mi parte favorita del día es cuando hablo contigo 📱",
+        "Eres la niña más bonita 🎀",
+        "Mi parte favorita del día es cuando hablo contigo 📞",
         "Haces que mi mundo se llene de colores 🎨",
-        "Tienes el don de hacerme sonreír siempre 😊",
+        "Tienes el don de hacerme sonreír siempre 🌻",
         "Siempre voy a cuidarte y amarte 🛡️",
-        "Eres la casualidad más bonita que llegó a mi vida 🎈",
+        "Eres la casualidad más bonita que llegó a mi vida 💫",
         "Amo cada pequeño detalle de ti 🔍",
         "Mi corazón salta de alegría cuando te veo 💓",
-        "Te amo infinitamente, mi niña preciosa ♾️"
+        "Te amo infinitamente, mi niña preciosa 🌺"
     ];
 
     let currentDayIdx = new Date().getDay();
-    if(currentDayIdx === 0) currentDayIdx = 1;
+    if(currentDayIdx === 0 || currentDayIdx === 6) currentDayIdx = 1;
 
     document.addEventListener('DOMContentLoaded', () => {
+        initBoard();
         setDay(currentDayIdx);
         updateClock();
         updateUI();
         setInterval(updateClock, 1000);
         setInterval(updateUI, 60000);
     });
+
+    function initBoard() {
+        const lines = document.getElementById('gridLines');
+        const tl = document.getElementById('timeline');
+        lines.innerHTML = '';
+        tl.innerHTML = '';
+        for(let i=0; i<=7; i++) {
+            lines.innerHTML += `<div class="grid-line"></div>`;
+            tl.innerHTML += `<div class="time-label"><span>${formatTime12h(14+i, true)}</span></div>`;
+        }
+    }
 
     document.getElementById('secretIconTrigger').addEventListener('click', () => {
         const mensajeAleatorio = mensajesBonitos[Math.floor(Math.random() * mensajesBonitos.length)];
@@ -406,22 +536,18 @@
         createRain(); 
     });
 
-    // ABRE EL MODAL DE RESPALDO AL TOCAR EL NOMBRE
     function openBackupModal() {
         document.getElementById('backupModal').classList.add('show');
         if(navigator.vibrate) navigator.vibrate(40);
     }
 
-    // DESCARGAR DATOS
     function descargarRespaldo() {
         const notas = localStorage.getItem('vane_notas');
         const cuentas = localStorage.getItem('vane_cuentas');
-
         if (!notas && !cuentas) {
             alert('Aún no hay datos guardados para respaldar.');
             return;
         }
-
         const backupData = { notas: notas ? JSON.parse(notas) : [], cuentas: cuentas ? JSON.parse(cuentas) : [] };
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
         const downloadAnchorNode = document.createElement('a');
@@ -435,23 +561,21 @@
         document.getElementById('backupModal').classList.remove('show');
     }
 
-    // CARGAR DATOS
     function cargarRespaldo(event) {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
                 const data = JSON.parse(e.target.result);
                 if (data.notas) localStorage.setItem('vane_notas', JSON.stringify(data.notas));
                 if (data.cuentas) localStorage.setItem('vane_cuentas', JSON.stringify(data.cuentas));
-                alert('¡Datos cargados correctamente! 🌸');
+                alert('¡Datos cargados correctamente! 💖');
                 document.getElementById('backupModal').classList.remove('show');
             } catch (error) {
                 alert('Error al leer el archivo. Asegúrate de que sea el archivo correcto.');
             }
-            event.target.value = ''; // Resetea el input para poder cargar el mismo archivo si es necesario
+            event.target.value = '';
         };
         reader.readAsText(file);
     }
@@ -478,16 +602,17 @@
         const btn = document.getElementById(`btn-${idx}`);
         if(btn) btn.classList.add('active');
         
-        renderGrid('grid-yo', dbYo[idx]);
+        renderGrid('grid-vane', dbVane[idx]);
         renderGrid('grid-genaro', dbGenaro[idx]);
         updateUI(); 
     }
 
-    function formatTime12h(h) {
+    function formatTime12h(h, short = false) {
         const hour = Math.floor(h);
         const min = Math.round((h % 1) * 60);
         const ampm = hour >= 12 ? 'PM' : 'AM';
         const h12 = hour % 12 || 12;
+        if(short && min === 0) return `${h12} ${ampm}`;
         return `${h12}:${min.toString().padStart(2, '0')} ${ampm}`;
     }
 
@@ -502,14 +627,14 @@
         const container = document.getElementById(containerId);
         container.innerHTML = '';
         
-        // Si no hay clases (como el sábado de Vanessa o los domingos), simplemente no se renderiza nada
-        if(!classes || classes.length === 0) {
-            return;
-        }
+        if(!classes || classes.length === 0) return;
         
         classes.forEach(cls => {
+            const top = (cls.s - startHour) * hourHeight;
+            const height = cls.d * hourHeight;
+            
             container.innerHTML += `
-                <div class="class-card ${cls.c}" data-start="${cls.s}"> 
+                <div class="class-card ${cls.c}" data-start="${cls.s}" style="top: ${top}px; height: ${height - 4}px; margin-top: 2px;">
                     <span class="cc-name">${cls.n}</span>
                     <span class="cc-time"><i class="fa-regular fa-clock"></i> ${formatTime12h(cls.s)} - ${formatTime12h(cls.s+cls.d)}</span>
                 </div>
@@ -522,14 +647,12 @@
         const day = now.getDay() === 0 ? 0 : now.getDay();
         const curTime = now.getHours() + (now.getMinutes() / 60);
 
-        // Limpiar tarjetas activas
         document.querySelectorAll('.class-card').forEach(c => {
             c.classList.remove('active-class');
             const ind = c.querySelector('.current-indicator');
             if (ind) ind.remove();
         });
 
-        // ACTUALIZAR WIDGET DE ESTADO (SOLO PARA VANESSA)
         const classEl = document.getElementById('currentClass');
         const timeEl = document.getElementById('timeLeft');
         const nextEl = document.getElementById('nextClass');
@@ -537,31 +660,30 @@
         const barEl = document.getElementById('progressBar');
         const iconEl = document.getElementById('statusIcon');
 
-        if (day === 0) {
+        if (day === 0 || day === 6) {
             labelEl.innerText = "ESTADO";
-            classEl.innerText = "¡Domingo Libre! 🌸";
-            timeEl.innerText = "Día libre";
+            classEl.innerText = "¡Día Libre! 🎉";
+            timeEl.innerText = "A descansar";
             nextEl.innerText = "Nos vemos el Lunes";
             barEl.style.width = "0%";
-            iconEl.className = "fa-solid fa-cake-candles";
+            iconEl.className = "fa-solid fa-house-user";
         } else {
-            const todayYo = dbYo[day] || [];
-            if (todayYo.length === 0) {
-                // Sábado o día libre
+            const todayVane = dbVane[day] || [];
+            if (todayVane.length === 0) {
                 labelEl.innerText = "ESTADO";
-                classEl.innerText = "¡Día libre! 🍓";
+                classEl.innerText = "¡Día libre! 🎉";
                 timeEl.innerText = "A descansar";
                 barEl.style.width = "0%";
                 iconEl.className = "fa-solid fa-house-user";
-                nextEl.innerText = "Próximo: Lunes 7:00 AM";
+                nextEl.innerText = "Próximo: Lunes 2:00 PM";
             } else {
-                const current = todayYo.find(c => curTime >= c.s && curTime < (c.s + c.d));
-                const upcoming = todayYo.filter(c => c.s > curTime).sort((a,b) => a.s - b.s);
+                const current = todayVane.find(c => curTime >= c.s && curTime < (c.s + c.d));
+                const upcoming = todayVane.filter(c => c.s > curTime).sort((a,b) => a.s - b.s);
 
                 if (current) {
                     labelEl.innerText = "EN CURSO";
                     classEl.innerText = current.n;
-                    iconEl.className = current.i; 
+                    iconEl.className = current.i;
                     
                     const totalMin = current.d * 60;
                     const elapsedMin = (curTime - current.s) * 60;
@@ -578,11 +700,10 @@
                         nextEl.innerText = "Último turno del día";
                     }
 
-                    // Poner el indicador si está viendo el día actual
                     let activeBtn = document.querySelector('.day-btn.active');
                     let viewDay = activeBtn ? parseInt(activeBtn.id.split('-')[1]) : 1;
                     if (day === viewDay) {
-                        let activeCard = document.querySelector(`#grid-yo .class-card[data-start="${current.s}"]`);
+                        let activeCard = document.querySelector(`#grid-vane .class-card[data-start="${current.s}"]`);
                         if (activeCard) {
                             activeCard.classList.add('active-class');
                             const badge = document.createElement('div');
@@ -609,29 +730,28 @@
                     barEl.style.width = "0%";
                     
                     const nextDay = (day >= 5) ? 1 : day + 1;
-                    const nextDayClass = dbYo[nextDay] && dbYo[nextDay].length > 0 ? dbYo[nextDay][0] : null;
+                    const nextDayClass = dbVane[nextDay] && dbVane[nextDay].length > 0 ? dbVane[nextDay][0] : null;
+                    
                     if (nextDayClass) {
                         const dayName = (day >= 5) ? "Lunes" : "Mañana";
                         nextEl.innerText = `Próxima: ${dayName} a las ${formatTime12h(nextDayClass.s)}`;
                     }
                 }
             }
-        }
 
-        // ACTUALIZAR TARJETAS DE GENARO (Solo el brinquito visual)
-        if (day !== 0 && dbGenaro[day]) {
-            const currentGenaro = dbGenaro[day].find(c => curTime >= c.s && curTime < (c.s + c.d));
+            // Animación para Genaro
+            const currentGenaro = dbGenaro[day]?.find(c => curTime >= c.s && curTime < (c.s + c.d));
             if (currentGenaro) {
                 let activeBtn = document.querySelector('.day-btn.active');
                 let viewDay = activeBtn ? parseInt(activeBtn.id.split('-')[1]) : 1;
                 if (day === viewDay) {
-                    let activeCard = document.querySelector(`#grid-genaro .class-card[data-start="${currentGenaro.s}"]`);
-                    if (activeCard) {
-                        activeCard.classList.add('active-class');
+                    let activeCardG = document.querySelector(`#grid-genaro .class-card[data-start="${currentGenaro.s}"]`);
+                    if (activeCardG) {
+                        activeCardG.classList.add('active-class');
                         const badge = document.createElement('div');
                         badge.className = 'current-indicator';
                         badge.innerHTML = '¡AHORA!';
-                        activeCard.appendChild(badge);
+                        activeCardG.appendChild(badge);
                     }
                 }
             }
@@ -639,7 +759,7 @@
     }
 
     function createRain() {
-        const items = ['🍓', '🌸'];
+        const items = ['💖', '✨', '🌸', '🍓', '🦋'];
         for(let i=0; i<25; i++) {
             setTimeout(() => {
                 const drop = document.createElement('div');
